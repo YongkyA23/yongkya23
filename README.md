@@ -28,7 +28,11 @@
 
 ### Favorite Song
 <div align="center">
-  <img src="https://open.spotify.com/track/2O4Bb2WCkjlTPO827OnBMI?si=d03a0f8795094bcd?theme=dark&spin=true&scan=true&rainbow=true" alt="Widget with the current Spotify song"  />
+  <a href="https://open.spotify.com/user/yongky_anthony">
+    <img src="https://spotify-recently-played-readme.vercel.app/api?user=yongky_anthony&count=5&unique=true" alt="Spotify recently played"  />
+  </a>
 </div>
+
+###
 
 ###
