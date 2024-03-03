@@ -25,3 +25,10 @@
 
 ### 😂 Random Dev Meme
 <img src='https://randommeme-five.vercel.app/' style="height: 400px;"/>
+
+### Favorite Song
+<div align="center">
+  <img src="https://open.spotify.com/track/2O4Bb2WCkjlTPO827OnBMI?si=d03a0f8795094bcd?theme=dark&spin=true&scan=true&rainbow=true" alt="Widget with the current Spotify song"  />
+</div>
+
+###
