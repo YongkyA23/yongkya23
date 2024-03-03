@@ -17,6 +17,9 @@
 ![](https://github-readme-streak-stats.herokuapp.com/?user=YongkyA23&theme=dark&hide_border=false)<br/>
 ![](https://github-readme-stats.vercel.app/api/top-langs/?username=YongkyA23&theme=dark&hide_border=false&include_all_commits=true&count_private=true&layout=compact)
 
+# 🧑🏻‍💻 Github Activities
+<img src="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/snake.svg" alt="Snake animation" />
+
 ## 🏆 GitHub Trophies
 ![](https://github-profile-trophy.vercel.app/?username=YongkyA23&theme=tokyonight&no-frame=false&no-bg=true&margin-w=4)
 
