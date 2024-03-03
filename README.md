@@ -1,9 +1,9 @@
-
 <img align="right" src="https://visitor-badge.laobi.icu/badge?page_id=YongkyA23.yongkya23" />
 
 <h1 align="center">
     <img src="https://readme-typing-svg.herokuapp.com/?font=Righteous&size=35&center=true&vCenter=true&width=500&height=70&duration=4000&lines=Hi+There!+👋;+I'm+Yongky!;" />
 </h1
+    
 # 💫 About Me:
 🇮🇩 I’m A passionate frontend developer from Indonesia<br>🔭 I’m currently working on Hantam Kreasi Utama as a Web Developer<br>🌱 I’m currently learning React Framework and PHP
 
