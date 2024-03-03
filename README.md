@@ -26,13 +26,10 @@
 ### 😂 Random Dev Meme
 <img src='https://randommeme-five.vercel.app/' style="height: 400px;"/>
 
-### Favorite Song
-<div align="center">
+### 🎵 Recently Played Song
+<div align="left">
   <a href="https://open.spotify.com/user/yongky_anthony">
     <img src="https://spotify-recently-played-readme.vercel.app/api?user=yongky_anthony&count=5&unique=true" alt="Spotify recently played"  />
   </a>
 </div>
 
-###
-
-###
