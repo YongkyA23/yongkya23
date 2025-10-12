@@ -24,13 +24,6 @@
 ### ✍️ Random Dev Quote
 ![](https://quotes-github-readme.vercel.app/api?type=horizontal&theme=radical)
 
-### 😂 Random Dev Meme
-<img src='https://randommeme-five.vercel.app/' style="height: 400px;"/>
-
 ### 🎵 Recently Played Song
-<div align="left">
-  <a href="https://open.spotify.com/user/yongky_anthony">
-    <img src="https://spotify-recently-played-readme.vercel.app/api?user=yongky_anthony&count=5&unique=true" alt="Spotify recently played"  />
-  </a>
-</div>
+![Alt text](https://spotify-recently-played-readme.vercel.app/api?user=yongky_anthony)
 
