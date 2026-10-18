@@ -1,99 +1,85 @@
-<!-- Header -->
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:7aa2f7,100:bb9af7&height=180&section=header&text=Yongky%20Anthony&fontSize=48&fontColor=ffffff&fontAlignY=36&desc=Full-stack%20Web%20Developer%20from%20Indonesia%20%F0%9F%87%AE%F0%9F%87%A9&descAlignY=58&descSize=18" />
+<div align="right">
+  <img src="https://komarev.com/ghpvc/?username=YongkyA23&style=flat-square&color=7c3aed&label=Profile+Views" alt="Profile views" />
+</div>
 
 <div align="center">
-
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&duration=3500&pause=800&color=7AA2F7&center=true&vCenter=true&width=560&height=50&lines=Hi+there!+%F0%9F%91%8B+I'm+Yongky;Building+web+apps+with+React+%2B+TypeScript;APIs+with+NestJS%2C+Fastify+%26+Bun;Self-hosting+with+Docker+%26+Proxmox;Making+Roblox+games+on+the+side+%F0%9F%8E%AE" alt="Typing SVG" />
-
-<br/>
-
-<a href="https://linkedin.com/in/yongky-anthonychow"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
-<a href="https://discord.gg/blazeee_"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" /></a>
-<img src="https://visitor-badge.laobi.icu/badge?page_id=YongkyA23.yongkya23&left_color=1a1b27&right_color=7aa2f7" />
-
+  <h1>Hey, I'm Yongky! 👋</h1>
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=20&pause=1200&color=8B5CF6&center=true&vCenter=true&width=650&lines=Full-Stack+Developer+from+Indonesia;Building+SaaS+%26+Web+Applications;Exploring+AI-Assisted+Development" alt="Typing introduction" />
+  <br />
+  <strong>Turning ideas into useful digital products, from interface to infrastructure.</strong>
+  <br /><br />
+  <a href="https://linkedin.com/in/yongky-anthonychow">
+    <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+  <a href="https://discord.gg/blazeee_">
+    <img src="https://img.shields.io/badge/Discord-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord" />
+  </a>
+  <a href="https://qi-r.me">
+    <img src="https://img.shields.io/badge/Qi--R-171717?style=flat-square&logo=googlechrome&logoColor=white" alt="Qi-R" />
+  </a>
 </div>
 
 ---
 
-## 💫 About Me
+### 👨‍💻 About Me
 
-```ts
-const yongky = {
-  from: "Indonesia 🇮🇩",
-  role: "Web Developer @ Hantam Kreasi Utama",
-  daily: ["TypeScript", "React", "Tailwind CSS", "Bun", "NestJS", "PostgreSQL"],
-  shipping: ["Full-stack web apps", "REST APIs & background workers", "Self-hosted deployments"],
-  exploring: ["Three.js", "Roblox game dev (Luau + Rojo)"],
-  askMeAbout: ["React", "TypeScript", "Docker", "UI/UX in Figma"],
-};
-```
+- 🇮🇩 Developer based in **Indonesia**, focused on **full-stack web development** and **SaaS products**.
+- 🛠️ I enjoy building responsive interfaces, APIs, dashboards, and practical tools.
+- 🚀 Comfortable working across **frontend, backend, databases, and Linux server deployments**.
+- 🤖 Exploring **AI-assisted coding and agentic workflows** using Claude Code, Codex, and MCP tools.
+- 🌱 Always learning, experimenting, and improving how I build software.
 
----
+### 🧰 Tech Stack
 
-## 🛠️ Tech Stack
+**Frontend**
 
-<table>
-  <tr>
-    <td align="center" width="140"><b>🎨 Frontend</b></td>
-    <td>
-      <img src="https://skillicons.dev/icons?i=ts,js,react,vite,tailwind,threejs,html,css&theme=dark" /><br/>
-      <img src="https://img.shields.io/badge/shadcn%2Fui-000000?style=flat-square&logo=shadcnui&logoColor=white" />
-      <img src="https://img.shields.io/badge/TanStack_Query-FF4154?style=flat-square&logo=reactquery&logoColor=white" />
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><b>⚙️ Backend</b></td>
-    <td>
-      <img src="https://skillicons.dev/icons?i=bun,nodejs,nestjs,php,prisma&theme=dark" /><br/>
-      <img src="https://img.shields.io/badge/Fastify-000000?style=flat-square&logo=fastify&logoColor=white" />
-      <img src="https://img.shields.io/badge/CodeIgniter-EF4223?style=flat-square&logo=codeigniter&logoColor=white" />
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><b>🗄️ Database</b></td>
-    <td><img src="https://skillicons.dev/icons?i=postgres,mysql,firebase&theme=dark" /></td>
-  </tr>
-  <tr>
-    <td align="center"><b>🚀 DevOps</b></td>
-    <td><img src="https://skillicons.dev/icons?i=docker,nginx,cloudflare,proxmox,linux,git&theme=dark" /></td>
-  </tr>
-  <tr>
-    <td align="center"><b>🧪 Tools & More</b></td>
-    <td>
-      <img src="https://skillicons.dev/icons?i=vitest,figma,lua&theme=dark" /><br/>
-      <img src="https://img.shields.io/badge/Roblox_Studio-00A2FF?style=flat-square&logo=robloxstudio&logoColor=white" />
-      <img src="https://img.shields.io/badge/Luau-00A2FF?style=flat-square&logo=luau&logoColor=white" />
-    </td>
-  </tr>
-</table>
+![JavaScript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
----
+**Backend & Database**
 
-## 📊 GitHub Stats
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![CodeIgniter](https://img.shields.io/badge/CodeIgniter-EF4223?style=for-the-badge&logo=codeigniter&logoColor=white)
+![Bun](https://img.shields.io/badge/Bun-14151A?style=for-the-badge&logo=bun&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-DD2C00?style=for-the-badge&logo=firebase&logoColor=white)
+
+**DevOps & Tools**
+
+![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=white)
+
+### 🚀 Things I'm Building
+
+| Project | What it is |
+| :--- | :--- |
+| 🔗 **[Qi-R](https://qi-r.me)** | A platform for QR codes and short links. |
+| 💻 **[Turudev Tech](https://turudev.id)** | Software development and digital product initiatives. |
+
+### 📊 GitHub Activity
 
 <div align="center">
-
-<img height="170" src="https://github-readme-stats.vercel.app/api?username=YongkyA23&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true&count_private=true&rank_icon=github" />
-<img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username=YongkyA23&theme=tokyonight&hide_border=true&layout=compact&langs_count=8" />
-
-<img src="https://streak-stats.demolab.com?user=YongkyA23&theme=tokyonight&hide_border=true" />
-
+  <img src="https://github-readme-stats.vercel.app/api?username=YongkyA23&show_icons=true&theme=tokyonight&hide_border=true&rank_icon=github" alt="Yongky's GitHub stats" height="165" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=YongkyA23&layout=compact&theme=tokyonight&hide_border=true&langs_count=8" alt="Most used languages" height="165" />
+  <br />
+  <img src="https://streak-stats.demolab.com?user=YongkyA23&theme=tokyonight&hide_border=true" alt="GitHub contribution streak" />
 </div>
 
 ---
 
-<table>
-  <tr>
-    <td valign="top" width="50%">
-      <h3>✍️ Random Dev Quote</h3>
-      <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=tokyonight" />
-    </td>
-    <td valign="top" width="50%">
-      <h3>🎵 Recently Played</h3>
-      <img src="(https://spotify-recently-played.jeffreyca.workers.dev/svg?user=yongky_anthony&duration=1&album=1" />
-    </td>
-  </tr>
-</table>
-
-<!-- Footer -->
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:bb9af7,100:7aa2f7&height=110&section=footer" />
+<div align="center">
+  <i>Build something useful. Keep learning. Ship and improve. 🚀</i>
+</div>
