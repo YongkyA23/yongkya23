@@ -1,21 +1,23 @@
-// "The Range": the contribution graph as a Valorant practice range. Every day with contributions
-// is a target, sized by GitHub's level. A crosshair clears them in rounds of five, with a kill
-// banner for each kill and an ACE on the fifth, then the targets respawn.
-// Replaces the contribution snake. Run: node .github/scripts/range-card.mjs <user> <out.svg>
-// The kill banner is VALORANT's current default, the cross knives (Base_Kill_Banner_Alternate.png
-// from the VALORANT Fandom wiki; Riot replaced the old skull with it),
-// used under Riot's fan content policy; the README carries the required notice.
+// "The Range": the contribution graph as a Valorant Shooting Test. Every day with contributions is a
+// training bot. Bots pop up one at a time, a Vandal shoots them (tracer, recoil, damage numbers,
+// 25-round magazine with reloads) and each kill leaves a hit mark, until the board is cleared.
+// Run: node .github/scripts/range-card.mjs <user> <out.svg>
+// The Range map art and the Vandal are official VALORANT assets (valorant-api.com), used under
+// Riot's fan content policy; the README carries the required notice.
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { C, cham, fontFace, uniq } from "./rank-card.mjs";
 
 const TEAL = "#36e6b5";
-const GOLD = "#f2c14e";
 const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+const ASSETS = join(dirname(fileURLToPath(import.meta.url)), "..", "valorant");
 
-// Timing in seconds. A round is five kills; the ACE gets a short pause so it can be read.
-const PER_KILL = 0.3, ACE_PAUSE = 0.6, LEAD = 0.5, TAIL = 2.4, HOLD = 0.12;
+// Timing in seconds. The Vandal holds 25 rounds; every empty magazine costs a reload.
+const PER_SHOT = 0.28, RELOAD = 1.4, MAG = 25, LEAD = 0.6, TAIL = 2.6, HOLD = 0.1, SPAWN = 0.45;
+// Vandal damage by GitHub level: legs, body, body, head.
+const DAMAGE = [0, 34, 40, 40, 160];
+const PAD_TINT = [0, 0.16, 0.26, 0.38, 0.52];
 
 export async function fetchGrid(user) {
   const html = await (await fetch(`https://github.com/users/${user}/contributions`, { headers: { "User-Agent": "range-card" } })).text();
@@ -29,55 +31,34 @@ export async function fetchGrid(user) {
 
 const f = (n) => +n.toFixed(4);
 
-// On/off windows for a calcMode="discrete" animation, as fractions of the loop.
-function discrete(windows, L) {
-  const vals = [0], keys = [0];
-  for (const [a, b] of windows) { vals.push(1, 0); keys.push(f(a / L), f(b / L)); }
-  return { values: vals.join(";"), keyTimes: keys.join(";") };
-}
-
-// A quick jump to `big` at each time, easing back to `rest` (a scale pop, or a rotation sweep).
-function pops(times, L, big, settle, rest = 1) {
+// SMIL values/keyTimes from [seconds, value] events, resting at `rest` at both ends of the loop.
+function track(L, rest, events) {
   const vals = [rest], keys = [0];
-  for (const t of times) { vals.push(rest, big, rest); keys.push(f((t - 0.01) / L), f(t / L), f((t + settle) / L)); }
+  let last = 0;
+  for (const [t, v] of events) {
+    const k = Math.max(f(t / L), f(last + 0.0001));
+    if (k >= 1) break;
+    vals.push(v); keys.push(k); last = k;
+  }
   vals.push(rest); keys.push(1);
-  return { values: vals.join(";"), keyTimes: keys.join(";") };
+  return `values="${vals.join(";")}" keyTimes="${keys.join(";")}"`;
 }
 
-const KILL_BANNER = join(dirname(fileURLToPath(import.meta.url)), "..", "valorant", "kill-banner.png");
-// In the 312x400 source image the ring is centred at (156, 215) and the kill bar sits ~133px above it.
-const KB_CX = 156, KB_CY = 215, KB_BAR_R = 133, KB_SCALE = 0.34;
-
-function arc(r, from, to) {
-  const p = (a) => `${f(Math.cos((a * Math.PI) / 180) * r)} ${f(Math.sin((a * Math.PI) / 180) * r)}`;
-  return `M${p(from)}A${r} ${r} 0 0 1 ${p(to)}`;
+// On/off windows for a calcMode="discrete" animation.
+function windows(L, wins) {
+  const vals = [0], keys = [0];
+  for (const [a, b] of wins) { vals.push(1, 0); keys.push(f(a / L), f(b / L)); }
+  return `values="${vals.join(";")}" keyTimes="${keys.join(";")}"`;
 }
 
-const BANNER_X = -86;
-
-// Bar angles per kill count, as in the default banner: one bar on top for the first kill, a left and
-// right pair for the second, then k bars spread evenly from the top (120°, 90°, 72°, 60°).
-const barAngles = (k) => (k === 2 ? [180, 0] : Array.from({ length: k }, (_, i) => -90 + (i * 360) / k));
-
-// Kill banner, centred on (0,0). The source image's own top bar is clipped off (see #kbclip) and
-// every bar is drawn here, so kill 2 can drop the top bar the way the game does.
-// `sweep` holds animateTransforms that swing the bars in from further out when the kill lands.
-function banner(k, sweep = "") {
-  const ace = k === 5;
-  const col = ace ? GOLD : k === 4 ? C.red : C.cream;
-  const bar = ace ? GOLD : TEAL;
-  const s = KB_SCALE, R = KB_BAR_R * s;
-  const bars = barAngles(k)
-    .map((a) => `<path d="${arc(R, a - 16, a + 16)}" fill="none" stroke="${bar}" stroke-width="${f(13 * s)}" stroke-linecap="round"/>`)
-    .join("");
-  const emblem = `<g transform="translate(${BANNER_X} 0)"><use href="#kb" transform="translate(${f(-KB_CX * s)} ${f(-KB_CY * s)}) scale(${s})"${ace ? ' filter="url(#gold)"' : ""}/><g>${sweep}${bars}</g></g>`;
-  const pips = Array.from({ length: 5 }, (_, i) => `<path d="M${-26 + i * 17} 14h12l-3 5h-12z" fill="${i < k ? col : C.line}"/>`).join("");
-  const wings = ace ? `<path d="M-180 0h40M66 0h40" stroke="${GOLD}" stroke-width="2"/><path d="M-190 -6l10 6-10 6M116 -6l-10 6 10 6" fill="${GOLD}"/>` : "";
-  return `${wings}${emblem}<text class="d" x="-26" y="6" font-size="${ace ? 32 : 26}" letter-spacing="${ace ? 6 : 2}" fill="${col}">${ace ? "ACE" : `KILL ${k}`}</text>${pips}`;
-}
+// A training bot standing on (0,0): body, head and visor. Armoured (level 4) bots get a red helmet.
+const bot = (level) => {
+  const body = level >= 3 ? C.cream : "#c9cfd4";
+  return `<path d="M-5 0L-4 -8H4L5 0Z" fill="${body}"/><rect x="-1.5" y="-10" width="3" height="2" fill="${body}"/><circle cy="-12.5" r="3.2" fill="${level === 4 ? C.red : body}"/><rect x="-2.4" y="-13.2" width="4.8" height="1.4" fill="${level === 4 ? C.cream : C.red}"/>`;
+};
 
 export async function renderRangeCard({ cells, total }) {
-  const W = 1200, H = 428;
+  const W = 1200, H = 430;
   const size = 16, gap = 5, step = size + gap;
   const cols = Math.max(...cells.map((c) => c.col)) + 1;
   const x0 = Math.round((W - (cols * step - gap)) / 2), y0 = 136;
@@ -89,77 +70,76 @@ export async function renderRangeCard({ cells, total }) {
     .filter((c) => c.level > 0)
     .sort((a, b) => a.col - b.col || (a.col % 2 ? b.row - a.row : a.row - b.row));
   const N = targets.length;
-  const arrive = targets.map((_, i) => LEAD + i * PER_KILL + Math.floor(i / 5) * ACE_PAUSE);
+  const arrive = targets.map((_, i) => LEAD + i * PER_SHOT + Math.floor(i / MAG) * RELOAD);
   const hitAt = arrive.map((a) => a + 0.05);
-  const lastEnd = N ? hitAt[N - 1] + PER_KILL + ACE_PAUSE : LEAD;
+  const lastEnd = N ? hitAt[N - 1] + 0.5 : LEAD;
   const L = f(lastEnd + TAIL);
+  const clearAt = (c) => lastEnd + 0.4 + 1.6 * (c.col / cols);
 
-  const radius = [0, 4.2, 5.6, 6.8, 7.8];
-  const empty = cells
-    .filter((c) => c.level === 0)
-    .map((c) => `<rect x="${cx(c) - size / 2}" y="${cy(c) - size / 2}" width="${size}" height="${size}" rx="2" fill="${C.panel}"/>`)
+  // Empty days are plain pads; active days are tinted by level so the pattern reads before any shot.
+  const pads = cells
+    .map((c) => `<rect x="${cx(c) - size / 2}" y="${cy(c) - size / 2}" width="${size}" height="${size}" rx="2" fill="${C.panel}" fill-opacity=".85"/>${c.level ? `<rect x="${cx(c) - size / 2}" y="${cy(c) - size / 2}" width="${size}" height="${size}" rx="2" fill="${C.red}" fill-opacity="${PAD_TINT[c.level]}"/>` : ""}`)
     .join("");
 
-  const targetEls = targets
+  const botEls = targets
     .map((c, i) => {
-      const r = radius[c.level];
-      const head = c.level === 4;
-      const hit = f(hitAt[i] / L);
-      const respawn = f((lastEnd + 0.3 + 1.6 * (c.col / cols)) / L);
-      const ring = i % 5 === 4 ? GOLD : head ? C.red : C.cream;
-      const x = cx(c), y = cy(c);
-      return `<g><animate attributeName="opacity" values="1;1;0;0;1" keyTimes="0;${hit};${f(hit + 0.002)};${respawn};1" dur="${L}s" repeatCount="indefinite"/>
-<rect x="${x - size / 2}" y="${y - size / 2}" width="${size}" height="${size}" rx="2" fill="${C.panel}"/>
-<circle cx="${x}" cy="${y}" r="${r}" fill="${C.bg}" stroke="${C.red}" stroke-width="${head ? 2 : 1.5}"/>
-<circle cx="${x}" cy="${y}" r="${f(r * 0.38)}" fill="${head ? C.red : C.cream}"/></g>
-<circle cx="${x}" cy="${y}" r="0" fill="none" stroke="${ring}" stroke-width="2" opacity="0"><animate attributeName="r" values="0;0;14;14" keyTimes="0;${hit};${f(hit + 0.15 / L)};1" dur="${L}s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;0;1;0;0" keyTimes="0;${hit};${f(hit + 0.01 / L)};${f(hit + 0.2 / L)};1" dur="${L}s" repeatCount="indefinite"/></circle>`;
+      const t = hitAt[i], spawn = Math.max(0.05, t - SPAWN);
+      const x = cx(c), base = cy(c) + 7;
+      const dmg = DAMAGE[c.level], head = c.level === 4;
+      return `<g transform="translate(${x} ${base})">
+  <g opacity="0"><animate attributeName="opacity" ${track(L, 0, [[spawn, 0], [spawn + 0.01, 1], [t + 0.16, 1], [t + 0.24, 0]])} dur="${L}s" repeatCount="indefinite"/>
+    <g><animateTransform attributeName="transform" type="rotate" ${track(L, 0, [[t, 0], [t + 0.15, head ? -85 : 80]])} dur="${L}s" repeatCount="indefinite"/>
+      <g><animateTransform attributeName="transform" type="scale" ${track(L, "1 0", [[spawn, "1 0"], [spawn + 0.12, "1 1"]])} dur="${L}s" repeatCount="indefinite"/>${bot(c.level)}</g>
+    </g>
+  </g>
+  <path d="M-3 -10l6 6M3 -10l-6 6" stroke="${head ? C.red : C.cream}" stroke-width="1.6" opacity="0"><animate attributeName="opacity" ${track(L, 0, [[t + 0.12, 0], [t + 0.13, head ? 1 : 0.75], [clearAt(c), head ? 1 : 0.75], [clearAt(c) + 0.2, 0]])} dur="${L}s" repeatCount="indefinite"/></path>
+  <text class="d" x="0" y="-18" text-anchor="middle" font-size="${head ? 14 : 11}" fill="${head ? C.red : C.cream}" opacity="0">${dmg}<animate attributeName="opacity" ${track(L, 0, [[t, 0], [t + 0.01, 1], [t + 0.55, 0]])} dur="${L}s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" ${track(L, "0 0", [[t, "0 0"], [t + 0.6, "0 -16"]])} dur="${L}s" repeatCount="indefinite"/></text>
+</g>`;
     })
     .join("\n");
 
-  // Crosshair: lands on each target, holds for the shot, moves on, and returns to the start.
-  const vals = [], keys = [];
-  if (N) {
-    const p0 = `${cx(targets[0])} ${cy(targets[0])}`;
-    vals.push(p0); keys.push(0);
-    targets.forEach((c, i) => {
-      const p = `${cx(c)} ${cy(c)}`;
-      vals.push(p, p); keys.push(f(arrive[i] / L), f((arrive[i] + HOLD) / L));
-    });
-    vals.push(p0); keys.push(1);
-  }
-  const kick = pops(hitAt, L, 1.45, 0.1);
+  // Crosshair lands on each bot, holds for the shot, moves on, and returns to the start.
+  const xhEvents = [];
+  targets.forEach((c, i) => { xhEvents.push([arrive[i], `${cx(c)} ${cy(c)}`], [arrive[i] + HOLD, `${cx(c)} ${cy(c)}`]); });
+  const xhStart = N ? `${cx(targets[0])} ${cy(targets[0])}` : "0 0";
+  const hitmark = (on) => hitAt.flatMap((t) => [[t, 0], [t + 0.01, on], [t + 0.12, 0]]);
 
-  // Banner k shows from its kill until the next kill; the ACE banner also covers the pause.
-  const windowsFor = (k) =>
-    targets.map((_, i) => i).filter((i) => i % 5 === k - 1)
-      .map((i) => [hitAt[i], i + 1 < N ? hitAt[i + 1] : hitAt[i] + PER_KILL + ACE_PAUSE]);
-  const bx = W / 2, by = y0 + 7 * step + 54;
-  const banners = [1, 2, 3, 4, 5]
-    .map((k) => {
-      const w = windowsFor(k);
-      if (!w.length) return "";
-      const vis = discrete(w, L);
-      const starts = w.map((x) => x[0]);
-      const pop = pops(starts, L, k === 5 ? 1.35 : 1.2, 0.09);
-      const rot = pops(starts, L, -40, 0.22, 0);
-      const grow = pops(starts, L, 1.35, 0.2);
-      const sweep = `<animateTransform attributeName="transform" type="rotate" values="${rot.values}" keyTimes="${rot.keyTimes}" dur="${L}s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="scale" additive="sum" values="${grow.values}" keyTimes="${grow.keyTimes}" dur="${L}s" repeatCount="indefinite"/>`;
-      return `<g transform="translate(${bx} ${by})"><g opacity="0"><animate attributeName="opacity" values="${vis.values}" keyTimes="${vis.keyTimes}" dur="${L}s" repeatCount="indefinite" calcMode="discrete"/><animateTransform attributeName="transform" type="scale" values="${pop.values}" keyTimes="${pop.keyTimes}" dur="${L}s" repeatCount="indefinite"/>${banner(k, sweep)}</g></g>`;
+  // Vandal in the bottom right (the icon already points left, at the board), with recoil, muzzle flash and a tracer.
+  const vandal = `data:image/png;base64,${(await readFile(join(ASSETS, "vandal.png"))).toString("base64")}`;
+  const bg = `data:image/jpeg;base64,${(await readFile(join(ASSETS, "range-bg.jpg"))).toString("base64")}`;
+  const gw = 250, gh = gw * (128 / 420);
+  const gx = W - 70 - gw, gy = H - 38 - gh;
+  const muzzle = [gx + 6, gy + gh * 0.36];
+  const recoil = hitAt.flatMap((t) => [[t - 0.005, "0 0"], [t, "7 -3"], [t + 0.12, "0 0"]]);
+  const tracerX = targets.flatMap((c, i) => [[hitAt[i] - 0.005, cx(c)]]);
+  const tracerY = targets.flatMap((c, i) => [[hitAt[i] - 0.005, cy(c)]]);
+
+  // Ammo counter: one element per value, each shown while the magazine holds that many rounds.
+  const segs = [];
+  let now = 0, ammo = MAG;
+  hitAt.forEach((t, i) => {
+    segs.push([now, t, String(ammo)]);
+    ammo--;
+    now = t;
+    if (ammo === 0 && i < N - 1) {
+      segs.push([now, now + 0.25, "0"], [now + 0.25, arrive[i + 1] - 0.05, "RELOADING"]);
+      now = arrive[i + 1] - 0.05;
+      ammo = MAG;
+    }
+  });
+  segs.push([now, L, String(ammo)]);
+  const byLabel = new Map();
+  for (const [a, b, label] of segs) if (b > a) (byLabel.get(label) ?? byLabel.set(label, []).get(label)).push([a, b]);
+  const ammoX = gx - 26, ammoY = H - 48;
+  const ammoEls = [...byLabel]
+    .map(([label, wins]) => {
+      const reload = label === "RELOADING";
+      const text = reload
+        ? `<text class="h7" x="${ammoX}" y="${ammoY - 6}" text-anchor="end" font-size="16" letter-spacing="3" fill="${TEAL}">RELOADING</text>`
+        : `<text class="d" x="${ammoX}" y="${ammoY}" text-anchor="end" font-size="40" fill="${label === "0" ? C.red : Number(label) <= 5 ? C.red : C.cream}">${label}</text>`;
+      return `<g opacity="0"><animate attributeName="opacity" ${windows(L, wins)} dur="${L}s" repeatCount="indefinite" calcMode="discrete"/>${text}</g>`;
     })
-    .join("\n");
-  // Teal burst around the emblem on every kill, like the particle pop in game.
-  const ringR = 97 * KB_SCALE;
-  const burstR = [ringR], burstO = [0], burstK = [0];
-  for (const t of hitAt) {
-    burstR.push(ringR, ringR, ringR + 22, ringR); burstO.push(0, 0.9, 0, 0);
-    burstK.push(f((t - 0.005) / L), f(t / L), f((t + 0.25) / L), f((t + 0.26) / L));
-  }
-  burstR.push(ringR); burstO.push(0); burstK.push(1);
-  const burst = N ? `<circle cx="${bx + BANNER_X}" cy="${by}" r="${ringR}" fill="none" stroke="${TEAL}" stroke-width="3" stroke-dasharray="3 6" opacity="0"><animate attributeName="r" values="${burstR.join(";")}" keyTimes="${burstK.join(";")}" dur="${L}s" repeatCount="indefinite"/><animate attributeName="opacity" values="${burstO.join(";")}" keyTimes="${burstK.join(";")}" dur="${L}s" repeatCount="indefinite"/></circle>` : "";
-  const aceTimes = windowsFor(5).map(([a]) => a);
-  const aceBig = discrete(aceTimes.map((a) => [a, a + 0.55]), L);
-  const acePop = pops(aceTimes, L, 1.5, 0.14);
-  const flash = discrete(aceTimes.map((a) => [a, a + 0.18]), L);
+    .join("");
 
   const months = [];
   let lastMonth = -1;
@@ -172,63 +152,76 @@ export async function renderRangeCard({ cells, total }) {
     .map((m) => `<text class="h6" x="${x0 + m.col * step}" y="${y0 - 10}" font-size="11" letter-spacing="2" fill="${C.muted}">${m.label}</text>`)
     .join("");
 
-  const stats = [["HITS", total.toLocaleString("en-US")], ["TARGETS", String(N)], ["ACES", String(Math.floor(N / 5))]];
-  const barY = H - 46, barW = cols * step - gap;
+  const heads = targets.filter((c) => c.level === 4).length;
+  const stats = [["HITS", total.toLocaleString("en-US")], ["BOTS", String(N)], ["HEADSHOTS", String(heads)]];
+  const barY = H - 56, barW = gx - 140 - x0;
 
-  const display = await fontFace("Anton", 400, uniq(["THE RANGE", "KILL 12345", "ACE", ...stats.map((s) => s[1])]));
-  const h6 = await fontFace("Rajdhani", 600, uniq(["CONTRIBUTIONS // LAST 52 WEEKS", "TARGETS CLEARED", ...MONTHS, ...stats.map((s) => s[0])]));
+  const display = await fontFace("Anton", 400, uniq(["THE RANGE", "0123456789", ...stats.map((s) => s[1])]));
+  const h6 = await fontFace("Rajdhani", 600, uniq(["SHOOTING TEST // HARD  ·  LAST 52 WEEKS", "TARGETS CLEARED", "VANDAL", ...MONTHS, ...stats.map((s) => s[0])]));
+  const h7 = await fontFace("Rajdhani", 700, "RELOADING/∞");
 
   let sx = W - x0;
   const statEls = stats
     .slice()
     .reverse()
     .map(([k, v]) => {
-      const el = `<text class="d" x="${sx}" y="80" text-anchor="end" font-size="30" fill="${k === "ACES" ? GOLD : C.cream}">${v}</text><text class="h6" x="${sx}" y="100" text-anchor="end" font-size="12" letter-spacing="3" fill="${C.muted}">${k}</text>`;
+      const el = `<text class="d" x="${sx}" y="80" text-anchor="end" font-size="30" fill="${k === "HEADSHOTS" ? C.red : C.cream}">${v}</text><text class="h6" x="${sx}" y="100" text-anchor="end" font-size="12" letter-spacing="3" fill="${C.muted}">${k}</text>`;
       sx -= 130;
       return el;
     })
     .join("");
 
   const frame = cham(0.75, 0.75, W - 1.5, H - 1.5, 28);
-  const kb = `data:image/png;base64,${(await readFile(KILL_BANNER)).toString("base64")}`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="The Range: ${N} days with contributions in the last year shown as targets. A crosshair clears them in rounds of five, with a kill banner for each kill and an ACE every fifth. ${total} contributions in total.">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="The Range, a Shooting Test: ${N} days with contributions in the last year appear as training bots that a Vandal shoots down one by one, with damage numbers and reloads. ${total} contributions in total.">
 <title>The Range</title>
-<style>${display}${h6}
+<style>${display}${h6}${h7}
 .d{font-family:'Anton',Impact,'Arial Narrow',sans-serif}
 .h6{font-family:'Rajdhani','Arial Narrow',sans-serif;font-weight:600}
-@media (prefers-reduced-motion: reduce){.xh,.fx{display:none}}
+.h7{font-family:'Rajdhani','Arial Narrow',sans-serif;font-weight:700}
+@media (prefers-reduced-motion: reduce){.fx{display:none}}
 </style>
 <defs>
-  <clipPath id="kbclip"><rect x="0" y="100" width="312" height="300"/></clipPath>
-  <image id="kb" href="${kb}" width="312" height="400" clip-path="url(#kbclip)"/>
-  <filter id="gold" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.36 0.36 0.36 0 0  0.29 0.29 0.29 0 0  0.12 0.12 0.12 0 0  0 0 0 1 0"/></filter>
+  <clipPath id="card"><path d="${frame}"/></clipPath>
+  <linearGradient id="shade" x1="0" x2="1"><stop offset="0" stop-color="${C.bg}" stop-opacity=".93"/><stop offset=".7" stop-color="${C.bg}" stop-opacity=".86"/><stop offset="1" stop-color="${C.bg}" stop-opacity=".7"/></linearGradient>
 </defs>
-<path d="${frame}" fill="${C.bg}" stroke="${C.line}" stroke-width="1.5"/>
-<path class="fx" d="${frame}" fill="none" stroke="${GOLD}" stroke-width="3" opacity="0"><animate attributeName="opacity" values="${flash.values}" keyTimes="${flash.keyTimes}" dur="${L}s" repeatCount="indefinite" calcMode="discrete"/></path>
+<g clip-path="url(#card)">
+  <rect width="${W}" height="${H}" fill="${C.bg}"/>
+  <image href="${bg}" width="${W}" height="${H}" preserveAspectRatio="xMidYMid slice" opacity=".9"/>
+  <rect width="${W}" height="${H}" fill="url(#shade)"/>
+</g>
+<path d="${frame}" fill="none" stroke="${C.line}" stroke-width="1.5"/>
 <rect x="${x0}" y="52" width="10" height="34" fill="${C.red}"/>
 <text class="d" x="${x0 + 22}" y="84" font-size="40" letter-spacing="1" fill="${C.cream}">THE RANGE</text>
-<text class="h6" x="${x0 + 22}" y="106" font-size="14" letter-spacing="4" fill="${C.muted}">CONTRIBUTIONS // LAST 52 WEEKS</text>
+<text class="h6" x="${x0 + 22}" y="106" font-size="14" letter-spacing="4" fill="${C.muted}">SHOOTING TEST // HARD  ·  LAST 52 WEEKS</text>
 ${statEls}
 ${monthEls}
-${empty}
-${targetEls}
-<g class="xh">
-  ${N ? `<animateTransform attributeName="transform" type="translate" values="${vals.join(";")}" keyTimes="${keys.join(";")}" dur="${L}s" repeatCount="indefinite" calcMode="linear"/>` : ""}
-  <g><animateTransform attributeName="transform" type="scale" values="${kick.values}" keyTimes="${kick.keyTimes}" dur="${L}s" repeatCount="indefinite"/>
-    <path d="M-15 0h8M7 0h8M0 -15v8M0 7v8" stroke="#000" stroke-opacity=".6" stroke-width="4"/>
-    <path d="M-15 0h8M7 0h8M0 -15v8M0 7v8" stroke="${TEAL}" stroke-width="2"/>
-  </g>
-  <circle r="1.8" fill="${TEAL}"/>
+${pads}
+<g class="fx">
+${botEls}
+<line x1="${muzzle[0]}" y1="${muzzle[1]}" x2="${muzzle[0]}" y2="${muzzle[1]}" stroke="#ffe7a8" stroke-width="1.6" stroke-linecap="round" opacity="0">
+  <animate attributeName="x2" ${track(L, muzzle[0], tracerX)} dur="${L}s" repeatCount="indefinite" calcMode="discrete"/>
+  <animate attributeName="y2" ${track(L, muzzle[1], tracerY)} dur="${L}s" repeatCount="indefinite" calcMode="discrete"/>
+  <animate attributeName="opacity" ${track(L, 0, hitAt.flatMap((t) => [[t - 0.004, 0], [t, 0.85], [t + 0.06, 0]]))} dur="${L}s" repeatCount="indefinite"/>
+</line>
+<g>
+  <animateTransform attributeName="transform" type="translate" ${track(L, "0 0", recoil)} dur="${L}s" repeatCount="indefinite"/>
+  <image href="${vandal}" x="${gx}" y="${f(gy)}" width="${gw}" height="${f(gh)}"/>
+  <path d="M${muzzle[0]} ${muzzle[1]}l-16 -5l6 5l-12 0l12 3l-8 7l18 -10z" fill="#ffd36b" opacity="0"><animate attributeName="opacity" ${track(L, 0, hitAt.flatMap((t) => [[t - 0.004, 0], [t, 1], [t + 0.05, 0]]))} dur="${L}s" repeatCount="indefinite"/></path>
 </g>
-<g class="fx" transform="translate(${W / 2} ${y0 + 3.5 * step + 30})"><g opacity="0">
-  <animate attributeName="opacity" values="${aceBig.values}" keyTimes="${aceBig.keyTimes}" dur="${L}s" repeatCount="indefinite" calcMode="discrete"/>
-  <animateTransform attributeName="transform" type="scale" values="${acePop.values}" keyTimes="${acePop.keyTimes}" dur="${L}s" repeatCount="indefinite"/>
-  <text class="d" x="0" y="0" text-anchor="middle" font-size="96" letter-spacing="14" fill="${GOLD}" stroke="${C.bg}" stroke-width="6" paint-order="stroke">ACE</text>
-</g></g>
-<g class="fx">${banners}${burst}</g>
+<g>
+  <animateTransform attributeName="transform" type="translate" ${track(L, xhStart, xhEvents)} dur="${L}s" repeatCount="indefinite"/>
+  <path d="M-15 0h8M7 0h8M0 -15v8M0 7v8" stroke="#000" stroke-opacity=".6" stroke-width="4"/>
+  <path d="M-15 0h8M7 0h8M0 -15v8M0 7v8" stroke="${TEAL}" stroke-width="2"/>
+  <circle r="1.8" fill="${TEAL}"/>
+  <path d="M-9 -9l4 4M9 -9l-4 4M-9 9l4 -4M9 9l-4 -4" stroke="#fff" stroke-width="2" opacity="0"><animate attributeName="opacity" ${track(L, 0, hitmark(1))} dur="${L}s" repeatCount="indefinite"/></path>
+</g>
+${ammoEls}
+</g>
+<text class="h7" x="${ammoX + 6}" y="${ammoY}" font-size="20" fill="${C.muted}">/ ∞</text>
+<text class="h6" x="${gx + gw}" y="${H - 22}" text-anchor="end" font-size="11" letter-spacing="3" fill="${C.muted}">VANDAL</text>
 <text class="h6" x="${x0}" y="${barY + 22}" font-size="11" letter-spacing="3" fill="${C.muted}">TARGETS CLEARED</text>
-<rect x="${x0 + 130}" y="${barY + 15}" width="${barW - 130}" height="4" fill="${C.line}"/>
-<rect x="${x0 + 130}" y="${barY + 15}" width="0" height="4" fill="${C.red}"><animate attributeName="width" values="0;0;${barW - 130};${barW - 130};0" keyTimes="0;${f(LEAD / L)};${f(lastEnd / L)};${f((lastEnd + 1.8) / L)};1" dur="${L}s" repeatCount="indefinite"/></rect>
+<rect x="${x0 + 130}" y="${barY + 15}" width="${barW}" height="4" fill="${C.line}"/>
+<rect x="${x0 + 130}" y="${barY + 15}" width="0" height="4" fill="${C.red}"><animate attributeName="width" values="0;0;${barW};${barW};0" keyTimes="0;${f(LEAD / L)};${f(lastEnd / L)};${f((lastEnd + 2) / L)};1" dur="${L}s" repeatCount="indefinite"/></rect>
 </svg>`;
 }
 

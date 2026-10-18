@@ -76,6 +76,26 @@ export async function fetchStats(user, token) {
   };
 }
 
+// VALORANT round ceremonies, earned from the last 365 days of contributions.
+export function ceremonies(days) {
+  const year = days.slice(-365);
+  let run = 0, best = 0, gap = 0, comeback = false;
+  for (const d of year) {
+    if (d.contributionCount > 0) {
+      run++; best = Math.max(best, run);
+      if (gap >= 30) comeback = true;
+      gap = 0;
+    } else { run = 0; gap++; }
+  }
+  const weekend = (d) => [0, 6].includes(new Date(`${d.date}T00:00:00Z`).getUTCDay());
+  return [
+    { name: "FLAWLESS", rule: "7-DAY STREAK", earned: best >= 7 },
+    { name: "ACE", rule: "5+ IN ONE DAY", earned: year.some((d) => d.contributionCount >= 5) },
+    { name: "CLUTCH", rule: "BACK AFTER 30+ DAYS", earned: comeback },
+    { name: "THRIFTY", rule: "10+ ON A WEEKEND", earned: year.some((d) => weekend(d) && d.contributionCount >= 10) },
+  ];
+}
+
 export function streaks(days) {
   let longest = { len: 0, start: null, end: null };
   let run = { len: 0, start: null };
@@ -100,6 +120,17 @@ const fmt = (iso, year = false) => {
 const range = (s, e, year) => (!s ? "NO ACTIVE STREAK" : s === e ? fmt(s, year) : `${fmt(s)} – ${fmt(e, year)}`);
 const badgeFor = (n) => (n === 0 ? "NO STREAK" : n === 1 ? "FIRST BLOOD" : n < 5 ? `${n}K` : "ACE");
 
+const GOLD = "#f2c14e";
+function ceremonyBadge(c, x, y) {
+  const w = 148, h = 50, on = c.earned;
+  return `<g opacity="${on ? 1 : 0.55}"><title>${c.name}: ${c.rule.toLowerCase()}${on ? "" : " (locked)"}</title>
+  <path d="${cham(x, y, w, h, 10)}" fill="${on ? "#2a2416" : C.panel}" stroke="${on ? GOLD : C.line}"/>
+  ${on ? `<path d="${cham(x, y, w, h, 10)}" fill="none" stroke="${GOLD}" stroke-width="2" opacity="0"><animate attributeName="opacity" values="0;.9;0" dur="2.6s" repeatCount="indefinite"/></path>` : ""}
+  <text class="d" x="${x + w / 2}" y="${y + 25}" text-anchor="middle" font-size="20" letter-spacing="2" fill="${on ? GOLD : C.muted}">${c.name}</text>
+  <text class="h6" x="${x + w / 2}" y="${y + 41}" text-anchor="middle" font-size="10" letter-spacing="1.5" fill="${on ? C.cream : C.muted}">${on ? c.rule : "LOCKED"}</text>
+</g>`;
+}
+
 export async function renderCareerCard(stats, last365) {
   const W = 1200, H = 552;
   const total = stats.days.reduce((a, d) => a + d.contributionCount, 0);
@@ -109,6 +140,7 @@ export async function renderCareerCard(stats, last365) {
   const rankSub = r.tier.name === "RADIANT" ? "LAST 365 DAYS" : `${r.rr} RR  ·  LAST 365 DAYS`;
   const since = `${fmt(stats.createdAt.slice(0, 10), true)} – PRESENT`;
   const badge = badgeFor(current.len);
+  const cer = ceremonies(stats.days);
 
   const kpis = [
     { label: "TOTAL CONTRIBUTIONS", value: total.toLocaleString("en-US"), unit: "", sub: since },
@@ -124,8 +156,8 @@ export async function renderCareerCard(stats, last365) {
   ];
   const langs = stats.languages;
 
-  const display = await fontFace("Anton", 400, uniq(["CAREER", rankName, ...kpis.map((k) => k.value), ...rows.map((r) => String(r[2]))]));
-  const h6 = await fontFace("Rajdhani", 600, uniq(["MATCH SUMMARY // PUBLIC REPOS", rankSub, ...kpis.map((k) => k.label + k.sub), ...rows.map((r) => r[0] + r[1])]));
+  const display = await fontFace("Anton", 400, uniq(["CAREER", rankName, ...cer.map((c) => c.name), ...kpis.map((k) => k.value), ...rows.map((r) => String(r[2]))]));
+  const h6 = await fontFace("Rajdhani", 600, uniq(["MATCH SUMMARY // PUBLIC REPOS", "LOCKED", rankSub, ...cer.map((c) => c.rule), ...kpis.map((k) => k.label + k.sub), ...rows.map((r) => r[0] + r[1])]));
   const h7 = await fontFace("Rajdhani", 700, uniq(["COMBAT STATS", "LOADOUT // LANGUAGES", badge, "DAYS", ...langs.map((l) => l.name.toUpperCase())]));
   const mono = await fontFace("JetBrains Mono", 500, "0123456789.%");
 
@@ -215,6 +247,7 @@ export async function renderCareerCard(stats, last365) {
 <rect x="48" y="52" width="10" height="34" fill="${C.red}"/>
 <text class="d" x="70" y="86" font-size="46" letter-spacing="1" fill="${C.cream}">CAREER</text>
 <text class="h6" x="70" y="112" font-size="15" letter-spacing="4" fill="${C.muted}">MATCH SUMMARY // PUBLIC REPOS</text>
+${cer.map((c, i) => ceremonyBadge(c, 240 + i * 160, 38)).join("")}
 <image href="${await rankIcon(r.t, r.division)}" x="1088" y="38" width="64" height="64"><title>${rankName}</title></image>
 <text class="d" x="1078" y="78" text-anchor="end" font-size="28" letter-spacing="1" fill="${r.tier.color}">${rankName}</text>
 <text class="h6" x="1078" y="100" text-anchor="end" font-size="13" letter-spacing="2" fill="${C.muted}">${rankSub}</text>
