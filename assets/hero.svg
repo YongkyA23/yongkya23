@@ -43,9 +43,9 @@
     <text class="d" x="0" y="340" font-size="190" fill="none" stroke="#2b3b4a" stroke-width="1.5" textLength="1600" lengthAdjust="spacingAndGlyphs">FULL-STACK DEVELOPER  ·  FULL-STACK DEVELOPER  ·  </text>
     <text class="d" x="1600" y="340" font-size="190" fill="none" stroke="#2b3b4a" stroke-width="1.5" textLength="1600" lengthAdjust="spacingAndGlyphs">FULL-STACK DEVELOPER  ·  FULL-STACK DEVELOPER  ·  </text>
   </g></g>
-  <polygon points="760,0 1200,0 1200,360 640,360" fill="#16222e"/>
-  <polygon points="760,0 1200,0 1200,360 640,360" fill="url(#diag)" opacity=".6"/>
-  <polygon points="742,0 760,0 640,360 622,360" fill="#ff4655"/>
+  <polygon points="800,0 1200,0 1200,360 700,360" fill="#16222e"/>
+  <polygon points="800,0 1200,0 1200,360 700,360" fill="url(#diag)" opacity=".6"/>
+  <polygon points="782,0 800,0 700,360 682,360" fill="#ff4655"/>
   <rect x="1060" y="0" width="140" height="18" fill="url(#hazard)"/>
 
   <g class="pop">
@@ -69,13 +69,13 @@
 
   <g class="in" style="animation-delay:.1s"><rect x="64" y="58" width="10" height="10" fill="#ff4655"/><text class="h6" x="84" y="68" font-size="16" letter-spacing="4" fill="#8a9aa6">AGENT // YONGKYA23</text></g>
   <g class="in" style="animation-delay:.2s">
-    <text class="d" x="58" y="200" font-size="128" textLength="430" lengthAdjust="spacingAndGlyphs" fill="#ece8e1">YONGKY</text>
-    <text class="d g1" x="58" y="200" font-size="128" textLength="430" lengthAdjust="spacingAndGlyphs" fill="#ff4655" clip-path="url(#top)">YONGKY</text>
-    <text class="d g2" x="58" y="200" font-size="128" textLength="430" lengthAdjust="spacingAndGlyphs" fill="#36e6b5" clip-path="url(#bot)">YONGKY</text>
+    <text class="d" x="64" y="200" font-size="128" textLength="430" lengthAdjust="spacingAndGlyphs" fill="#ece8e1">YONGKY</text>
+    <text class="d g1" x="64" y="200" font-size="128" textLength="430" lengthAdjust="spacingAndGlyphs" fill="#ff4655" clip-path="url(#top)">YONGKY</text>
+    <text class="d g2" x="64" y="200" font-size="128" textLength="430" lengthAdjust="spacingAndGlyphs" fill="#36e6b5" clip-path="url(#bot)">YONGKY</text>
   </g>
-  <g class="in" style="animation-delay:.4s"><text class="d" x="62" y="258" font-size="54" textLength="300" lengthAdjust="spacingAndGlyphs" fill="#ff4655" fill-opacity=".14" stroke="#ff4655" stroke-width="1.5">ANTHONY</text></g>
-  <text class="h6 role" x="392" y="258" font-size="18" letter-spacing="2" fill="#ece8e1" style="animation-delay:0s"><tspan fill="#ff4655">// </tspan>SHIPS FULL-STACK WEB APPS</text><text class="h6 role" x="392" y="258" font-size="18" letter-spacing="2" fill="#ece8e1" style="animation-delay:3s"><tspan fill="#ff4655">// </tspan>BUILDS APIS WITH NESTJS</text><text class="h6 role" x="392" y="258" font-size="18" letter-spacing="2" fill="#ece8e1" style="animation-delay:6s"><tspan fill="#ff4655">// </tspan>SELF-HOSTS ON PROXMOX</text><text class="h6 role" x="392" y="258" font-size="18" letter-spacing="2" fill="#ece8e1" style="animation-delay:9s"><tspan fill="#ff4655">// </tspan>MAKES ROBLOX GAMES</text>
-  <g class="in" style="animation-delay:.7s"><text class="h6" x="64" y="304" font-size="13" letter-spacing="3" fill="#8a9aa6">ROLE</text><text class="h7" x="64" y="329" font-size="21" letter-spacing="1" fill="#ece8e1">FULL-STACK DEV</text><line x1="226" x2="226" y1="288" y2="334" stroke="#2b3b4a"/><text class="h6" x="244" y="304" font-size="13" letter-spacing="3" fill="#8a9aa6">TEAM</text><text class="h7" x="244" y="329" font-size="21" letter-spacing="1" fill="#ece8e1">HANTAM KREASI UTAMA</text><line x1="460" x2="460" y1="288" y2="334" stroke="#2b3b4a"/><text class="h6" x="478" y="304" font-size="13" letter-spacing="3" fill="#8a9aa6">REGION</text><text class="h7" x="478" y="329" font-size="21" letter-spacing="1" fill="#ece8e1">AP · INDONESIA</text></g>
+  <g class="in" style="animation-delay:.4s"><text class="d" x="64" y="258" font-size="54" textLength="300" lengthAdjust="spacingAndGlyphs" fill="#ff4655" fill-opacity=".14" stroke="#ff4655" stroke-width="1.5">ANTHONY</text></g>
+  <text class="h6 role" x="392" y="257" font-size="18" letter-spacing="2" fill="#ece8e1" style="animation-delay:0s"><tspan fill="#ff4655">// </tspan>SHIPS FULL-STACK WEB APPS</text><text class="h6 role" x="392" y="257" font-size="18" letter-spacing="2" fill="#ece8e1" style="animation-delay:3s"><tspan fill="#ff4655">// </tspan>BUILDS APIS WITH NESTJS</text><text class="h6 role" x="392" y="257" font-size="18" letter-spacing="2" fill="#ece8e1" style="animation-delay:6s"><tspan fill="#ff4655">// </tspan>SELF-HOSTS ON PROXMOX</text><text class="h6 role" x="392" y="257" font-size="18" letter-spacing="2" fill="#ece8e1" style="animation-delay:9s"><tspan fill="#ff4655">// </tspan>MAKES ROBLOX GAMES</text>
+  <g class="in" style="animation-delay:.7s"><text class="h6" x="64" y="304" font-size="13" letter-spacing="3" fill="#8a9aa6">ROLE</text><text class="h7" x="64" y="329" font-size="21" letter-spacing="1" fill="#ece8e1">FULL-STACK DEV</text><line x1="233" x2="233" y1="290" y2="334" stroke="#2b3b4a"/><text class="h6" x="249" y="304" font-size="13" letter-spacing="3" fill="#8a9aa6">TEAM</text><text class="h7" x="249" y="329" font-size="21" letter-spacing="1" fill="#ece8e1">HANTAM KREASI UTAMA</text><line x1="487" x2="487" y1="290" y2="334" stroke="#2b3b4a"/><text class="h6" x="503" y="304" font-size="13" letter-spacing="3" fill="#8a9aa6">REGION</text><text class="h7" x="503" y="329" font-size="21" letter-spacing="1" fill="#ece8e1">AP · INDONESIA</text></g>
 
   <rect x="0" y="355" width="1200" height="5" fill="#2b3b4a"/>
   <rect class="timer" x="0" y="355" width="1200" height="5" fill="#ff4655"/>
