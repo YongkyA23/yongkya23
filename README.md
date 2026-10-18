@@ -2,9 +2,9 @@
 
 <img src="./assets/hero.svg" width="100%" alt="Agent select: Yongky Anthony, full-stack developer, team Hantam Kreasi Utama, region Indonesia" />
 
-<a href="https://linkedin.com/in/yongky-anthonychow"><img src="https://img.shields.io/badge/LinkedIn-0f1923?style=for-the-badge&logo=linkedin&logoColor=ff4655" alt="LinkedIn" /></a>
-<a href="https://discord.gg/blazeee_"><img src="https://img.shields.io/badge/Discord-0f1923?style=for-the-badge&logo=discord&logoColor=ff4655" alt="Discord" /></a>
-<img src="https://visitor-badge.laobi.icu/badge?page_id=YongkyA23.yongkya23&left_text=profile%20views&left_color=0f1923&right_color=ff4655" alt="Profile views" />
+<a href="https://linkedin.com/in/yongky-anthonychow"><img src="./assets/linkedin.svg" height="44" alt="LinkedIn" /></a>
+<a href="https://discord.gg/blazeee_"><img src="./assets/discord.svg" height="44" alt="Discord" /></a>
+<img src="https://visitor-badge.laobi.icu/badge?page_id=YongkyA23.yongkya23&left_text=PROFILE%20VIEWS&left_color=%2316222e&right_color=%23ff4655" height="28" alt="Profile views" />
 
 <img src="./assets/divider.svg" width="100%" alt="" />
 
@@ -35,6 +35,6 @@
 
 <img src="./assets/footer.svg" width="100%" alt="Victory. Thanks for stopping by, see you next match." />
 
-<sub>VALORANT rank icons belong to Riot Games. This profile isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</sub>
+<sub>VALORANT assets (rank icons, VP icon, kill banner) belong to Riot Games. This profile isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</sub>
 
 </div>
