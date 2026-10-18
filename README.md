@@ -90,7 +90,7 @@ const yongky = {
     </td>
     <td valign="top" width="50%">
       <h3>🎵 Recently Played</h3>
-      ![Spotify recently played](https://spotify-recently-played.jeffreyca.workers.dev/svg?user=yongky_anthony&duration=1&album=1)
+      <img src="(https://spotify-recently-played.jeffreyca.workers.dev/svg?user=yongky_anthony&duration=1&album=1" />
     </td>
   </tr>
 </table>
