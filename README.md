@@ -4,7 +4,8 @@
 
 <a href="https://linkedin.com/in/yongky-anthonychow"><img src="./assets/linkedin.svg" height="44" alt="LinkedIn" /></a>
 <a href="https://discord.gg/blazeee_"><img src="./assets/discord.svg" height="44" alt="Discord" /></a>
-<img src="https://visitor-badge.laobi.icu/badge?page_id=YongkyA23.yongkya23&left_text=PROFILE%20VIEWS&left_color=%2316222e&right_color=%23ff4655" height="28" alt="Profile views" />
+<img src="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/views.svg" height="44" alt="Profile views" />
+<img src="https://visitor-badge.laobi.icu/badge?page_id=YongkyA23.yongkya23" width="1" height="1" alt="" />
 
 <img src="./assets/divider.svg" width="100%" alt="" />
 

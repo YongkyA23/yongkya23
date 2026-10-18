@@ -1,10 +1,10 @@
-# Draws the Valorant-style cards the README links to: The Range, rank card and career card.
+# Draws the Valorant-style cards the README links to: views, The Range, rank card and career card.
 # The SVGs are pushed to the `output` branch, which the README links to.
 name: Profile cards
 
 on:
   schedule:
-    - cron: "0 0 * * *" # every day at 07:00 WIB
+    - cron: "0 * * * *" # hourly, so the views card stays close to the live count
   workflow_dispatch:
   push:
     branches: [main]
@@ -30,6 +30,9 @@ jobs:
         run: node .github/scripts/career-card.mjs ${{ github.repository_owner }} dist/career.svg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Profile views
+        run: node .github/scripts/views-card.mjs YongkyA23.yongkya23 dist/views.svg
 
       - name: The Range
         run: node .github/scripts/range-card.mjs ${{ github.repository_owner }} dist/range.svg
