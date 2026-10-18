@@ -25,7 +25,7 @@
   <img src="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/snake-light.svg" width="100%" alt="A snake eating my contribution graph" />
 </picture>
 
-<img src="https://github-readme-stats.vercel.app/api?username=YongkyA23&show_icons=true&include_all_commits=true&count_private=true&rank_icon=github&bg_color=0f1923&title_color=ff4655&text_color=ece8e1&icon_color=36e6b5&ring_color=ff4655&border_color=2b3b4a&border_radius=4" height="175" alt="GitHub stats" />
+<img src="https://github-readme-stats.vercel.app/api?username=YongkyA23&show_icons=true&count_private=true&rank_icon=github&bg_color=0f1923&title_color=ff4655&text_color=ece8e1&icon_color=36e6b5&ring_color=ff4655&border_color=2b3b4a&border_radius=4" height="175" alt="GitHub stats" />
 <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=YongkyA23&layout=compact&langs_count=8&bg_color=0f1923&title_color=ff4655&text_color=ece8e1&icon_color=36e6b5&ring_color=ff4655&border_color=2b3b4a&border_radius=4" height="175" alt="Top languages" />
 
 <img src="https://streak-stats.demolab.com?user=YongkyA23&background=0F1923&border=2B3B4A&stroke=2B3B4A&ring=FF4655&fire=FF4655&currStreakNum=ECE8E1&sideNums=FF4655&currStreakLabel=36E6B5&sideLabels=8A9AA6&dates=8A9AA6&border_radius=4" width="100%" alt="GitHub streak" />
