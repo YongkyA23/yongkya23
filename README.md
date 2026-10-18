@@ -1,101 +1,40 @@
-<!-- Header -->
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:7aa2f7,100:bb9af7&height=180&section=header&text=Yongky%20Anthony&fontSize=48&fontColor=ffffff&fontAlignY=36&desc=Full-stack%20Web%20Developer%20from%20Indonesia%20%F0%9F%87%AE%F0%9F%87%A9&descAlignY=58&descSize=18" />
-
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&duration=3500&pause=800&color=7AA2F7&center=true&vCenter=true&width=560&height=50&lines=Hi+there!+%F0%9F%91%8B+I'm+Yongky;Building+web+apps+with+React+%2B+TypeScript;APIs+with+NestJS%2C+Fastify+%26+Bun;Self-hosting+with+Docker+%26+Proxmox;Making+Roblox+games+on+the+side+%F0%9F%8E%AE" alt="Typing SVG" />
+<img src="./assets/hero.svg" width="100%" alt="Yongky Anthony, full-stack web developer from Indonesia" />
 
-<br/>
+<a href="https://linkedin.com/in/yongky-anthonychow"><img src="https://img.shields.io/badge/LinkedIn-12162d?style=for-the-badge&logo=linkedin&logoColor=f4c36a" alt="LinkedIn" /></a>
+<a href="https://discord.gg/blazeee_"><img src="https://img.shields.io/badge/Discord-12162d?style=for-the-badge&logo=discord&logoColor=f4c36a" alt="Discord" /></a>
+<img src="https://visitor-badge.laobi.icu/badge?page_id=YongkyA23.yongkya23&left_text=profile%20views&left_color=12162d&right_color=f4c36a" alt="Profile views" />
 
-<a href="https://linkedin.com/in/yongky-anthonychow"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
-<a href="https://discord.gg/blazeee_"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" /></a>
-<img src="https://visitor-badge.laobi.icu/badge?page_id=YongkyA23.yongkya23&left_color=1a1b27&right_color=7aa2f7" />
+<img src="./assets/divider.svg" width="100%" alt="" />
 
-</div>
+<img src="./assets/neofetch.svg" width="100%" alt="neofetch-style summary: web developer at Hantam Kreasi Utama, Indonesia" />
 
----
+<img src="./assets/divider.svg" width="100%" alt="" />
 
-## 💫 About Me
+<img src="./assets/orbit.svg" width="100%" alt="Tech orbit: TypeScript at the core, then frontend, backend and data, infra and tooling" />
 
-```ts
-const yongky = {
-  from: "Indonesia 🇮🇩",
-  role: "Web Developer @ Hantam Kreasi Utama",
-  daily: ["TypeScript", "React", "Tailwind CSS", "Bun", "NestJS", "PostgreSQL"],
-  shipping: ["Full-stack web apps", "REST APIs & background workers", "Self-hosted deployments"],
-  exploring: ["Three.js", "Roblox game dev (Luau + Rojo)"],
-  askMeAbout: ["React", "TypeScript", "Docker", "UI/UX in Figma"],
-};
-```
+<img src="./assets/divider.svg" width="100%" alt="" />
 
----
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/snake-dark.svg" />
+  <img src="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/snake-light.svg" width="100%" alt="A snake eating my contribution graph" />
+</picture>
 
-## 🛠️ Tech Stack
+<img src="https://github-readme-stats.vercel.app/api?username=YongkyA23&show_icons=true&include_all_commits=true&count_private=true&rank_icon=github&bg_color=0b0e1f&title_color=f4c36a&text_color=e8eaf6&icon_color=62e0d0&ring_color=f4c36a&border_color=262c52&border_radius=18" height="175" alt="GitHub stats" />
+<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=YongkyA23&layout=compact&langs_count=8&bg_color=0b0e1f&title_color=f4c36a&text_color=e8eaf6&icon_color=62e0d0&ring_color=f4c36a&border_color=262c52&border_radius=18" height="175" alt="Top languages" />
+
+<img src="https://streak-stats.demolab.com?user=YongkyA23&background=0B0E1F&border=262C52&stroke=262C52&ring=F4C36A&fire=FF7A90&currStreakNum=E8EAF6&sideNums=F4C36A&currStreakLabel=62E0D0&sideLabels=8D93BD&dates=8D93BD&border_radius=18" width="100%" alt="GitHub streak" />
+
+<img src="./assets/divider.svg" width="100%" alt="" />
 
 <table>
   <tr>
-    <td align="center" width="140"><b>🎨 Frontend</b></td>
-    <td>
-      <img src="https://skillicons.dev/icons?i=ts,js,react,vite,tailwind,threejs,html,css&theme=dark" /><br/>
-      <img src="https://img.shields.io/badge/shadcn%2Fui-000000?style=flat-square&logo=shadcnui&logoColor=white" />
-      <img src="https://img.shields.io/badge/TanStack_Query-FF4154?style=flat-square&logo=reactquery&logoColor=white" />
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><b>⚙️ Backend</b></td>
-    <td>
-      <img src="https://skillicons.dev/icons?i=bun,nodejs,nestjs,php,prisma&theme=dark" /><br/>
-      <img src="https://img.shields.io/badge/Fastify-000000?style=flat-square&logo=fastify&logoColor=white" />
-      <img src="https://img.shields.io/badge/CodeIgniter-EF4223?style=flat-square&logo=codeigniter&logoColor=white" />
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><b>🗄️ Database</b></td>
-    <td><img src="https://skillicons.dev/icons?i=postgres,mysql,firebase&theme=dark" /></td>
-  </tr>
-  <tr>
-    <td align="center"><b>🚀 DevOps</b></td>
-    <td><img src="https://skillicons.dev/icons?i=docker,nginx,cloudflare,proxmox,linux,git&theme=dark" /></td>
-  </tr>
-  <tr>
-    <td align="center"><b>🧪 Tools & More</b></td>
-    <td>
-      <img src="https://skillicons.dev/icons?i=vitest,figma,lua&theme=dark" /><br/>
-      <img src="https://img.shields.io/badge/Roblox_Studio-00A2FF?style=flat-square&logo=robloxstudio&logoColor=white" />
-      <img src="https://img.shields.io/badge/Luau-00A2FF?style=flat-square&logo=luau&logoColor=white" />
-    </td>
+    <td valign="top" width="50%"><img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=tokyonight" width="100%" alt="Random dev quote" /></td>
+    <td valign="top" width="50%"><img src="https://spotify-recently-played-readme.vercel.app/api?user=yongky_anthony&count=3" width="100%" alt="Recently played on Spotify" /></td>
   </tr>
 </table>
 
----
-
-## 📊 GitHub Stats
-
-<div align="center">
-
-<img height="170" src="https://github-readme-stats.vercel.app/api?username=YongkyA23&show_icons=true&theme=tokyonight&hide_border=true&include_all_commits=true&count_private=true&rank_icon=github" />
-<img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username=YongkyA23&theme=tokyonight&hide_border=true&layout=compact&langs_count=8" />
-
-<img src="https://streak-stats.demolab.com?user=YongkyA23&theme=tokyonight&hide_border=true" />
+<img src="./assets/footer.svg" width="100%" alt="Terima kasih sudah mampir! Thanks for stopping by." />
 
 </div>
-
----
-
-<table>
-  <tr>
-    <td valign="top" width="50%">
-      <h3>✍️ Random Dev Quote</h3>
-      <img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=tokyonight" />
-    </td>
-    <td valign="top" width="50%">
-      <h3>🎵 Recently Played</h3>
-      <a href="https://open.spotify.com/user/yongky_anthony">
-        <img src="https://spotify-recently-played.jeffreyca.workers.dev/svg?user=yongky_anthony&amp;duration=1&amp;album=1" alt="Spotify recently played" width="400" />
-      </a>
-    </td>
-  </tr>
-</table>
-
-<!-- Footer -->
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:bb9af7,100:7aa2f7&height=110&section=footer" />
