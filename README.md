@@ -20,10 +20,7 @@
 
 <img src="./assets/divider.svg" width="100%" alt="" />
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/snake-dark.svg" />
-  <img src="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/snake-light.svg" width="100%" alt="A snake eating my contribution graph" />
-</picture>
+<img src="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/range.svg" width="100%" alt="The Range: my contribution graph as practice targets" />
 
 <img src="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/career.svg" width="100%" alt="Career: contributions, streaks, combat stats and languages" />
 
