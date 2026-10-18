@@ -35,6 +35,6 @@
   </tr>
 </table>
 
-<img src="./assets/footer.svg" width="100%" alt="Terima kasih sudah mampir! Thanks for stopping by." />
+<img src="./assets/footer.svg" width="100%" alt="Thanks for stopping by! See you in the next commit." />
 
 </div>
