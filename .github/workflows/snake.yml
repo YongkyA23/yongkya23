@@ -1,4 +1,4 @@
-# Draws a snake eating the contribution graph, in the README's Valorant-style colours.
+# Draws the contribution snake and the rank card in the README's Valorant-style colours.
 # The SVGs are pushed to the `output` branch, which the README links to.
 name: Contribution snake
 
@@ -17,12 +17,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@v4
+
       - uses: Platane/snk@v3
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
             dist/snake-dark.svg?color_snake=#ff4655&color_dots=#16222e,#3d2a35,#7a2f3d,#c23a4b,#ff4655
             dist/snake-light.svg?color_snake=#ff4655&color_dots=#ebedf0,#ffd3d7,#ffa3ab,#ff6b78,#d93645
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Rank card
+        run: node .github/scripts/rank-card.mjs ${{ github.repository_owner }} dist/rank.svg
 
       - uses: crazy-max/ghaction-github-pages@v4
         with:

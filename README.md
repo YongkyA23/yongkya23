@@ -34,7 +34,7 @@
 
 <table>
   <tr>
-    <td valign="top" width="50%"><img src="https://quotes-github-readme.vercel.app/api?type=horizontal&theme=dark" width="100%" alt="Random dev quote" /></td>
+    <td valign="top" width="50%"><img src="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/rank.svg" width="100%" alt="Competitive rank from contributions in the last 365 days" /></td>
     <td valign="top" width="50%"><img src="https://spotify-recently-played-readme.vercel.app/api?user=yongky_anthony&count=3" width="100%" alt="Recently played on Spotify" /></td>
   </tr>
 </table>
