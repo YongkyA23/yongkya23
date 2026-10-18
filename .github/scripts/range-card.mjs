@@ -1,10 +1,10 @@
 // "The Range": the contribution graph as a Valorant Shooting Test. Every day with contributions is a
-// training bot. Bots pop up one at a time, a Vandal shoots them (tracer, recoil, damage numbers,
+// target with an agent's head. Targets pop up one at a time, a Vandal shoots them (tracer, recoil, damage numbers,
 // 25-round magazine with reloads) and each kill leaves a hit mark, until the board is cleared.
 // Run: node .github/scripts/range-card.mjs <user> <out.svg>
-// The Range map art and the Vandal are official VALORANT assets (valorant-api.com), used under
+// The Range map art, the Vandal and the agent headshots are official VALORANT assets (valorant-api.com), used under
 // Riot's fan content policy; the README carries the required notice.
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { C, cham, fontFace, uniq } from "./rank-card.mjs";
@@ -51,11 +51,26 @@ function windows(L, wins) {
   return `values="${vals.join(";")}" keyTimes="${keys.join(";")}"`;
 }
 
-// A training bot standing on (0,0): body, head and visor. Armoured (level 4) bots get a red helmet.
-const bot = (level) => {
-  const body = level >= 3 ? C.cream : "#c9cfd4";
-  return `<path d="M-5 0L-4 -8H4L5 0Z" fill="${body}"/><rect x="-1.5" y="-10" width="3" height="2" fill="${body}"/><circle cy="-12.5" r="3.2" fill="${level === 4 ? C.red : body}"/><rect x="-2.4" y="-13.2" width="4.8" height="1.4" fill="${level === 4 ? C.cream : C.red}"/>`;
-};
+// Agent headshots (official icons, 24px, in ../valorant/agents) defined once and reused per target.
+// Order is a fixed shuffle so neighbouring targets show different agents.
+async function agentDefs() {
+  const dir = join(ASSETS, "agents");
+  const files = (await readdir(dir)).filter((n) => n.endsWith(".png")).sort();
+  let seed = 23;
+  const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+  for (let i = files.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [files[i], files[j]] = [files[j], files[i]]; }
+  const defs = [];
+  for (const [i, n] of files.entries()) {
+    const png = (await readFile(join(dir, n))).toString("base64");
+    defs.push(`<image id="ag${i}" href="data:image/png;base64,${png}" x="-8" y="-16" width="16" height="16" clip-path="url(#headclip)"/>`);
+  }
+  return { count: files.length, defs: defs.join("") };
+}
+
+// An agent head filling its 16px cell, standing on (0,0) like the training bots did.
+// Headshot days (level 4) get a red frame.
+const head = (k, level) =>
+  `<rect x="-8" y="-16" width="16" height="16" rx="2" fill="${C.bg}"/><use href="#ag${k}"/>${level === 4 ? `<rect x="-7.4" y="-15.4" width="14.8" height="14.8" rx="2" fill="none" stroke="${C.red}" stroke-width="1.2"/>` : ""}`;
 
 export async function renderRangeCard({ cells, total }) {
   const W = 1200, H = 430;
@@ -81,19 +96,22 @@ export async function renderRangeCard({ cells, total }) {
     .map((c) => `<rect x="${cx(c) - size / 2}" y="${cy(c) - size / 2}" width="${size}" height="${size}" rx="2" fill="${C.panel}" fill-opacity=".85"/>${c.level ? `<rect x="${cx(c) - size / 2}" y="${cy(c) - size / 2}" width="${size}" height="${size}" rx="2" fill="${C.red}" fill-opacity="${PAD_TINT[c.level]}"/>` : ""}`)
     .join("");
 
+  // Each target is an agent head in its own cell: it rises from the bottom of the cell, gets shot,
+  // tips over and drops out, leaving a hit mark on the pad.
+  const agents = await agentDefs();
   const botEls = targets
     .map((c, i) => {
       const t = hitAt[i], spawn = Math.max(0.05, t - SPAWN);
-      const x = cx(c), base = cy(c) + 7;
-      const dmg = DAMAGE[c.level], head = c.level === 4;
+      const x = cx(c), base = cy(c) + size / 2;
+      const dmg = DAMAGE[c.level], hs = c.level === 4;
       return `<g transform="translate(${x} ${base})">
-  <g opacity="0"><animate attributeName="opacity" ${track(L, 0, [[spawn, 0], [spawn + 0.01, 1], [t + 0.16, 1], [t + 0.24, 0]])} dur="${L}s" repeatCount="indefinite"/>
-    <g><animateTransform attributeName="transform" type="rotate" ${track(L, 0, [[t, 0], [t + 0.15, head ? -85 : 80]])} dur="${L}s" repeatCount="indefinite"/>
-      <g><animateTransform attributeName="transform" type="scale" ${track(L, "1 0", [[spawn, "1 0"], [spawn + 0.12, "1 1"]])} dur="${L}s" repeatCount="indefinite"/>${bot(c.level)}</g>
+  <g opacity="0"><animate attributeName="opacity" ${track(L, 0, [[spawn, 0], [spawn + 0.01, 1], [t + 0.16, 1], [t + 0.26, 0]])} dur="${L}s" repeatCount="indefinite"/>
+    <g><animateTransform attributeName="transform" type="rotate" ${track(L, 0, [[t, 0], [t + 0.15, hs ? -85 : 80]])} dur="${L}s" repeatCount="indefinite"/>
+      <g><animateTransform attributeName="transform" type="scale" ${track(L, "1 0", [[spawn, "1 0"], [spawn + 0.12, "1 1"]])} dur="${L}s" repeatCount="indefinite"/>${head(i % agents.count, c.level)}</g>
     </g>
   </g>
-  <path d="M-3 -10l6 6M3 -10l-6 6" stroke="${head ? C.red : C.cream}" stroke-width="1.6" opacity="0"><animate attributeName="opacity" ${track(L, 0, [[t + 0.12, 0], [t + 0.13, head ? 1 : 0.75], [clearAt(c), head ? 1 : 0.75], [clearAt(c) + 0.2, 0]])} dur="${L}s" repeatCount="indefinite"/></path>
-  <text class="d" x="0" y="-18" text-anchor="middle" font-size="${head ? 14 : 11}" fill="${head ? C.red : C.cream}" opacity="0">${dmg}<animate attributeName="opacity" ${track(L, 0, [[t, 0], [t + 0.01, 1], [t + 0.55, 0]])} dur="${L}s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" ${track(L, "0 0", [[t, "0 0"], [t + 0.6, "0 -16"]])} dur="${L}s" repeatCount="indefinite"/></text>
+  <path d="M-3.5 -11.5l7 7M3.5 -11.5l-7 7" stroke="${hs ? C.red : C.cream}" stroke-width="1.8" opacity="0"><animate attributeName="opacity" ${track(L, 0, [[t + 0.14, 0], [t + 0.15, hs ? 1 : 0.75], [clearAt(c), hs ? 1 : 0.75], [clearAt(c) + 0.2, 0]])} dur="${L}s" repeatCount="indefinite"/></path>
+  <text class="d" x="0" y="-19" text-anchor="middle" font-size="${hs ? 15 : 12}" fill="${hs ? C.red : C.cream}" stroke="${C.bg}" stroke-width="3" paint-order="stroke" opacity="0">${dmg}<animate attributeName="opacity" ${track(L, 0, [[t, 0], [t + 0.01, 1], [t + 0.55, 0]])} dur="${L}s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" ${track(L, "0 0", [[t, "0 0"], [t + 0.6, "0 -16"]])} dur="${L}s" repeatCount="indefinite"/></text>
 </g>`;
     })
     .join("\n");
@@ -172,7 +190,7 @@ export async function renderRangeCard({ cells, total }) {
     .join("");
 
   const frame = cham(0.75, 0.75, W - 1.5, H - 1.5, 28);
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="The Range, a Shooting Test: ${N} days with contributions in the last year appear as training bots that a Vandal shoots down one by one, with damage numbers and reloads. ${total} contributions in total.">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="The Range, a Shooting Test: ${N} days with contributions in the last year appear as agent head targets that a Vandal shoots down one by one, with damage numbers and reloads. ${total} contributions in total.">
 <title>The Range</title>
 <style>${display}${h6}${h7}
 .d{font-family:'Anton',Impact,'Arial Narrow',sans-serif}
@@ -182,6 +200,8 @@ export async function renderRangeCard({ cells, total }) {
 </style>
 <defs>
   <clipPath id="card"><path d="${frame}"/></clipPath>
+  <clipPath id="headclip"><rect x="-8" y="-16" width="16" height="16" rx="2"/></clipPath>
+  ${agents.defs}
   <linearGradient id="shade" x1="0" x2="1"><stop offset="0" stop-color="${C.bg}" stop-opacity=".93"/><stop offset=".7" stop-color="${C.bg}" stop-opacity=".86"/><stop offset="1" stop-color="${C.bg}" stop-opacity=".7"/></linearGradient>
 </defs>
 <g clip-path="url(#card)">
