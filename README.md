@@ -90,9 +90,9 @@ const yongky = {
     </td>
     <td valign="top" width="50%">
       <h3>🎵 Recently Played</h3>
-     <a href="https://open.spotify.com/user/yongky_anthony">
-  <img src="https://spotify-recently-played.jeffreyca.workers.dev/svg?user=yongky_anthony&amp;duration=1&amp;album=1" alt="Spotify recently played" width="400" />
-</a>
+      <a href="https://open.spotify.com/user/yongky_anthony">
+        <img src="https://spotify-recently-played.jeffreyca.workers.dev/svg?user=yongky_anthony&amp;duration=1&amp;album=1" alt="Spotify recently played" width="400" />
+      </a>
     </td>
   </tr>
 </table>
