@@ -8,7 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const RANKS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "ranks");
 
-const C = { bg: "#0f1923", panel: "#16222e", line: "#2b3b4a", red: "#ff4655", cream: "#ece8e1", muted: "#8a9aa6" };
+export const C = { bg: "#0f1923", panel: "#16222e", line: "#2b3b4a", red: "#ff4655", cream: "#ece8e1", muted: "#8a9aa6" };
 
 // Contributions needed to reach division 1 of each tier; each tier splits its range into 3 divisions.
 const TIERS = [
@@ -45,7 +45,7 @@ export async function fetchTotal(user) {
 }
 
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
-async function fontFace(family, weight, text) {
+export async function fontFace(family, weight, text) {
   const fam = family.replace(/ /g, "+") + (family === "Anton" ? "" : `:wght@${weight}`);
   const css = await (await fetch(`https://fonts.googleapis.com/css2?family=${fam}&text=${encodeURIComponent(text)}`, { headers: { "User-Agent": UA } })).text();
   const src = css.match(/url\((https:[^)]+)\)/)?.[1];
@@ -53,11 +53,11 @@ async function fontFace(family, weight, text) {
   const buf = Buffer.from(await (await fetch(src)).arrayBuffer());
   return `@font-face{font-family:'${family}';font-weight:${weight};src:url(data:font/woff2;base64,${buf.toString("base64")}) format('woff2')}`;
 }
-const uniq = (strings) => [...new Set(strings.join("").split(""))].join("");
-const cham = (x, y, w, h, c) => `M${x + c} ${y}H${x + w}V${y + h - c}L${x + w - c} ${y + h}H${x}V${y + c}Z`;
+export const uniq = (strings) => [...new Set(strings.join("").split(""))].join("");
+export const cham = (x, y, w, h, c) => `M${x + c} ${y}H${x + w}V${y + h - c}L${x + w - c} ${y + h}H${x}V${y + c}Z`;
 
 // Icon files are named by VALORANT's tier number: IRON 1 is 3, each division adds 1, RADIANT is 27.
-async function rankIcon(t, division) {
+export async function rankIcon(t, division) {
   const n = TIERS[t].name === "RADIANT" ? 27 : 3 + t * 3 + (division - 1);
   const png = await readFile(join(RANKS_DIR, `${n}.png`));
   return `data:image/png;base64,${png.toString("base64")}`;

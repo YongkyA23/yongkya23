@@ -1,4 +1,4 @@
-# Draws the contribution snake and the rank card in the README's Valorant-style colours.
+# Draws the contribution snake, rank card and career card in the README's Valorant-style colours.
 # The SVGs are pushed to the `output` branch, which the README links to.
 name: Contribution snake
 
@@ -25,6 +25,11 @@ jobs:
 
       - name: Rank card
         run: node .github/scripts/rank-card.mjs ${{ github.repository_owner }} dist/rank.svg
+
+      - name: Career card
+        run: node .github/scripts/career-card.mjs ${{ github.repository_owner }} dist/career.svg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: Platane/snk@v3
         with:
