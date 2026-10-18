@@ -41,4 +41,6 @@
 
 <img src="./assets/footer.svg" width="100%" alt="Victory. Thanks for stopping by, see you next match." />
 
+<sub>VALORANT rank icons belong to Riot Games. This profile isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</sub>
+
 </div>

@@ -1,9 +1,12 @@
 // Draws a Valorant-style rank card from the contributions of the last 365 days.
 // Run by the "Contribution snake" workflow: node .github/scripts/rank-card.mjs <user> <out.svg>
-// The emblem is drawn here; no Riot artwork is used.
-import { mkdir, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
-import { pathToFileURL } from "node:url";
+// Rank icons in ../ranks are the official VALORANT ones (from valorant-api.com), used under
+// Riot's fan content policy ("Legal Jibber Jabber"); the README carries the required notice.
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+
+const RANKS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "ranks");
 
 const C = { bg: "#0f1923", panel: "#16222e", line: "#2b3b4a", red: "#ff4655", cream: "#ece8e1", muted: "#8a9aa6" };
 
@@ -53,22 +56,11 @@ async function fontFace(family, weight, text) {
 const uniq = (strings) => [...new Set(strings.join("").split(""))].join("");
 const cham = (x, y, w, h, c) => `M${x + c} ${y}H${x + w}V${y + h - c}L${x + w - c} ${y + h}H${x}V${y + c}Z`;
 
-function emblem(color, division, radiant) {
-  const pips = radiant
-    ? ""
-    : Array.from({ length: division }, (_, i) => {
-        const x = (i - (division - 1) / 2) * 16;
-        return `<rect x="${x - 4}" y="54" width="8" height="8" transform="rotate(45 ${x} 58)" fill="${color}"/>`;
-      }).join("");
-  const rays = radiant
-    ? Array.from({ length: 8 }, (_, i) => `<rect x="-2" y="-66" width="4" height="14" fill="${color}" transform="rotate(${i * 45})"/>`).join("")
-    : "";
-  return `${rays}
-  <polygon points="0,-46 38,-22 38,18 0,46 -38,18 -38,-22" fill="${color}" fill-opacity=".14" stroke="${color}" stroke-width="2"/>
-  <polygon points="0,-30 22,-8 0,30 -22,-8" fill="${color}"/>
-  <polygon points="0,-30 22,-8 0,-2" fill="#fff" fill-opacity=".38"/>
-  <polygon points="0,30 -22,-8 0,-2" fill="#000" fill-opacity=".18"/>
-  ${pips}`;
+// Icon files are named by VALORANT's tier number: IRON 1 is 3, each division adds 1, RADIANT is 27.
+async function rankIcon(t, division) {
+  const n = TIERS[t].name === "RADIANT" ? 27 : 3 + t * 3 + (division - 1);
+  const png = await readFile(join(RANKS_DIR, `${n}.png`));
+  return `data:image/png;base64,${png.toString("base64")}`;
 }
 
 export async function renderRankCard(total) {
@@ -117,7 +109,7 @@ export async function renderRankCard(total) {
 <text class="h7" x="32" y="33" font-size="13" letter-spacing="3" fill="${C.cream}">COMPETITIVE</text>
 <text class="h6" x="380" y="33" text-anchor="end" font-size="11" letter-spacing="2" fill="${C.muted}">LAST 365 DAYS</text>
 <circle class="glow" cx="${ex}" cy="${ey}" r="60" fill="url(#g)"/>
-<g class="em"><g transform="translate(${ex} ${ey - 6})">${emblem(tier.color, r.division, radiant)}</g></g>
+<g class="em"><image href="${await rankIcon(r.t, r.division)}" x="${ex - 54}" y="${ey - 54}" width="108" height="108"><title>${rankName}</title></image></g>
 <text class="h6" x="${barX}" y="78" font-size="11" letter-spacing="3" fill="${C.muted}">CURRENT RANK</text>
 <text class="d" x="${barX}" y="114" font-size="34" letter-spacing="1" fill="${tier.color}">${rankName}</text>
 <text class="h7" x="${barX}" y="138" font-size="15" letter-spacing="1" fill="${C.cream}">${totalText}</text>
