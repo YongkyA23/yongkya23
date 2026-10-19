@@ -1,4 +1,4 @@
-# Draws the Valorant-style cards the README links to: views, The Range, rank card and career card.
+# Draws the Valorant-style cards the README links to: views, Spotify, The Range, rank and career.
 # The SVGs are pushed to the `output` branch, which the README links to.
 name: Profile cards
 
@@ -33,6 +33,13 @@ jobs:
 
       - name: Profile views
         run: node .github/scripts/views-card.mjs YongkyA23.yongkya23 dist/views.svg
+
+      - name: Spotify
+        run: node .github/scripts/spotify-card.mjs dist/spotify.svg
+        env:
+          SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
+          SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SPOTIFY_REFRESH_TOKEN: ${{ secrets.SPOTIFY_REFRESH_TOKEN }}
 
       - name: The Range
         run: node .github/scripts/range-card.mjs ${{ github.repository_owner }} dist/range.svg

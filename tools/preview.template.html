@@ -1,0 +1,216 @@
+<title>YongkyA23 Profile Preview</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: a faithful GitHub profile frame (sidebar + README card) with a small control bar above it. */
+:root {
+  --bg: #ffffff; --fg: #1f2328; --muted: #59636e; --border: #d1d9e0; --subtle: #f6f8fa;
+  --accent: #0969da; --gold: #d93645; --btn: #f6f8fa; --btn-hover: #eef1f4;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1117; --fg: #e6edf3; --muted: #8d96a0; --border: #30363d; --subtle: #151b23;
+  --accent: #4493f8; --gold: #ff4655; --btn: #212830; --btn-hover: #262c36; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0d1117; --fg: #e6edf3; --muted: #8d96a0; --border: #30363d; --subtle: #151b23;
+  --accent: #4493f8; --gold: #ff4655; --btn: #212830; --btn-hover: #262c36; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.5; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+.bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+  padding-bottom: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--border); }
+.bar h1 { margin: 0; font-size: 16px; font-weight: 600; display: flex; gap: 8px; align-items: center; }
+.bar h1 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gold); }
+.bar p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.seg button, .btn { font: inherit; font-size: 13px; font-weight: 500; color: var(--fg); background: var(--btn);
+  border: 0; padding: 5px 12px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--border); }
+.seg button[aria-pressed="true"] { background: var(--bg); color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
+.btn { border: 1px solid var(--border); border-radius: 6px; }
+.seg button:hover, .btn:hover { background: var(--btn-hover); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.profile { display: grid; grid-template-columns: 296px minmax(0, 1fr); gap: 24px; align-items: start; }
+.side img { width: 100%; max-width: 296px; aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--border); display: block; }
+.side h2 { margin: 16px 0 0; font-size: 24px; line-height: 1.25; font-weight: 600; }
+.side .login { font-size: 20px; color: var(--muted); font-weight: 300; }
+.side .bio { margin: 16px 0; }
+.side ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; color: var(--fg); }
+.side li { display: flex; gap: 8px; align-items: center; }
+.side svg { width: 16px; height: 16px; fill: var(--muted); flex: none; }
+
+.card { border: 1px solid var(--border); border-radius: 6px; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 8px 16px; border-bottom: 1px solid var(--border); font-size: 12px; font-family: var(--mono); color: var(--muted); }
+.card-head b { color: var(--fg); font-weight: 600; }
+.readme { padding: 24px 32px; }
+.readme .center { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+.readme img { max-width: 100%; vertical-align: middle; }
+.readme .badges { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center; }
+.readme .duo { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.readme .duo img { height: 175px; width: auto; }
+.readme table { border-collapse: collapse; width: 100%; }
+.readme td { border: 1px solid var(--border); padding: 6px 13px; vertical-align: top; width: 50%; }
+.note { font-size: 12px; color: var(--muted); font-family: var(--mono); margin-top: 4px; }
+
+pre.src { margin: 0; padding: 16px; overflow-x: auto; font: 12px/1.6 var(--mono); background: var(--subtle); border-radius: 0 0 6px 6px; white-space: pre; }
+
+.files { margin-top: 24px; border: 1px solid var(--border); border-radius: 6px; padding: 16px 20px; display: grid; gap: 8px; }
+.files h3 { margin: 0; font-size: 14px; }
+.files pre { margin: 0; font: 13px/1.7 var(--mono); color: var(--fg); overflow-x: auto; }
+.files pre i { font-style: normal; color: var(--muted); }
+.files ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; color: var(--fg); }
+.files code { font-family: var(--mono); font-size: 12px; background: var(--subtle); border: 1px solid var(--border); border-radius: 4px; padding: 0 4px; }
+
+@media (max-width: 860px) {
+  .profile { grid-template-columns: minmax(0, 1fr); }
+  .side { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 4px 16px; align-items: center; }
+  .side img { grid-row: span 2; }
+  .side h2 { margin: 0; font-size: 20px; }
+  .side .bio, .side ul { grid-column: 1 / -1; }
+  .readme { padding: 16px; }
+  .readme .duo img { height: auto; width: 100%; }
+}
+</style>
+
+<div class="wrap">
+  <header class="bar">
+    <div>
+      <h1><span class="dot"></span>Valorant agent theme: GitHub profile preview</h1>
+      <p>Rendered the way github.com/YongkyA23 will show it. Stats cards are a snapshot from today.</p>
+    </div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="GitHub theme">
+        <button type="button" id="t-dark" data-t="dark">GitHub dark</button>
+        <button type="button" id="t-light" data-t="light">GitHub light</button>
+      </div>
+      <div class="seg" role="group" aria-label="View">
+        <button type="button" id="v-preview" data-v="preview" aria-pressed="true">Preview</button>
+        <button type="button" id="v-source" data-v="source" aria-pressed="false">README.md</button>
+      </div>
+      <button type="button" class="btn" id="replay">Replay animations</button>
+    </div>
+  </header>
+
+  <div class="profile">
+    <aside class="side">
+      <img src="{{avatar}}" alt="Yongky's avatar">
+      <div>
+        <h2>Yongky Anthony</h2>
+        <div class="login">YongkyA23</div>
+      </div>
+      <p class="bio">Web Developer @ Hantam Kreasi Utama</p>
+      <ul>
+        <li><svg viewBox="0 0 16 16"><path d="m12.596 11.596-3.535 3.536a1.5 1.5 0 0 1-2.122 0l-3.535-3.536a6.5 6.5 0 1 1 9.192-9.193 6.5 6.5 0 0 1 0 9.193Zm-1.06-8.132v-.001a5 5 0 1 0-7.072 7.072L8 14.07l3.536-3.534a5 5 0 0 0 0-7.072ZM8 9a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 9Z"/></svg>Indonesia</li>
+        <li><svg viewBox="0 0 16 16"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"/></svg>linkedin.com/in/yongky-anthonychow</li>
+      </ul>
+    </aside>
+
+    <section class="card">
+      <div class="card-head"><span><b>YongkyA23</b> / README.md</span><span id="srcActions" hidden><button type="button" class="btn" id="copy">Copy README.md</button></span></div>
+
+      <div class="readme" id="pane-preview">
+        <div class="center">
+          <img src="{{hero}}" width="100%" alt="Agent select: Yongky Anthony">
+          <div class="badges">
+            <img src="{{linkedin}}" height="44" alt="LinkedIn"><img src="{{discord}}" height="44" alt="Discord"><img src="{{views}}" height="44" alt="Profile views">
+          </div>
+          <img src="{{divider}}" width="100%" alt="">
+          <img src="{{abilities}}" width="100%" alt="Abilities">
+          <img src="{{divider}}" width="100%" alt="">
+          <img src="{{arsenal}}" width="100%" alt="Arsenal">
+          <img src="{{divider}}" width="100%" alt="">
+          <img src="{{killfeed}}" width="100%" alt="Combat report">
+          <img src="{{divider}}" width="100%" alt="">
+          <img src="{{range}}" width="100%" alt="The Range">
+          <img src="{{career}}" width="100%" alt="Career">
+          <img src="{{divider}}" width="100%" alt="">
+          <table><tr>
+            <td><img src="{{rank}}" width="100%" alt="Competitive rank"></td>
+            <td><img src="{{spotify}}" width="100%" alt="Recently played on Spotify"></td>
+          </tr></table>
+          <img src="{{footer}}" width="100%" alt="Victory">
+          <sub style="color:var(--muted);font-size:11px;line-height:1.4">VALORANT assets (rank icons, agent headshots, weapons, Jett player card, Range map art, map names, gun buddy, spray, VP icon) belong to Riot Games. This profile isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</sub>
+        </div>
+      </div>
+
+      <pre class="src" id="pane-source" hidden>{{readme}}</pre>
+    </section>
+  </div>
+
+  <section class="files">
+    <h3>What goes into the YongkyA23/YongkyA23 repo</h3>
+<pre>YongkyA23/
+├── README.md
+├── assets/
+│   ├── hero.svg       <i>agent select screen with LOCK IN</i>
+│   ├── abilities.svg  <i>C / Q / E / X ability cards</i>
+│   ├── arsenal.svg    <i>tech stack as the buy menu</i>
+│   ├── killfeed.svg   <i>combat report and kill feed</i>
+│   ├── linkedin.svg   <i>comms button</i>
+│   ├── discord.svg    <i>comms button</i>
+│   ├── divider.svg    <i>HUD line with a red diamond</i>
+│   └── footer.svg     <i>VICTORY screen</i>
+└── .github/
+    ├── workflows/cards.yml     <i>hourly views, range, rank + career</i>
+    ├── scripts/rank-card.mjs   <i>contributions to Iron…Radiant</i>
+    ├── scripts/career-card.mjs <i>streaks, stats, languages</i>
+    ├── scripts/range-card.mjs  <i>contributions as range targets</i>
+    ├── scripts/views-card.mjs  <i>profile views, refreshed hourly</i>
+    ├── ranks/*.png             <i>official rank icons</i>
+    └── valorant/               <i>Vandal, Range map art, agent heads</i></pre>
+    <ol>
+      <li>Push the files above to the repo named exactly <code>YongkyA23</code> (public).</li>
+      <li>Open the Actions tab, run <code>Profile cards</code> once. It creates the <code>output</code> branch the live cards read from.</li>
+    </ol>
+  </section>
+</div>
+
+<script>
+(function () {
+  const root = document.documentElement;
+  const themeBtns = document.querySelectorAll("[data-t]");
+  function currentTheme() {
+    return root.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  }
+  function paintTheme() {
+    const t = currentTheme();
+    themeBtns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === t)));
+  }
+  themeBtns.forEach((b) => b.addEventListener("click", () => { root.dataset.theme = b.dataset.t; paintTheme(); }));
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paintTheme);
+  paintTheme();
+
+  const panes = { preview: document.getElementById("pane-preview"), source: document.getElementById("pane-source") };
+  const srcActions = document.getElementById("srcActions");
+  document.querySelectorAll("[data-v]").forEach((b) => b.addEventListener("click", () => {
+    document.querySelectorAll("[data-v]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    panes.preview.hidden = b.dataset.v !== "preview";
+    panes.source.hidden = b.dataset.v !== "source";
+    srcActions.hidden = b.dataset.v !== "source";
+  }));
+
+  // Swapping each image for a fresh copy restarts its SVG animations from frame zero.
+  document.getElementById("replay").addEventListener("click", () => {
+    panes.preview.querySelectorAll("img").forEach((img) => img.replaceWith(img.cloneNode(true)));
+  });
+
+  const copyBtn = document.getElementById("copy");
+  copyBtn.addEventListener("click", () => {
+    const text = panes.source.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      copyBtn.textContent = "Copied";
+      setTimeout(() => (copyBtn.textContent = "Copy README.md"), 1600);
+    }).catch(() => {
+      const r = document.createRange(); r.selectNodeContents(panes.source);
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      copyBtn.textContent = "Press Ctrl+C";
+    });
+  });
+})();
+</script>
