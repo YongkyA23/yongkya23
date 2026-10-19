@@ -127,7 +127,8 @@ export async function renderRangeCard({ cells, total }) {
   const bg = `data:image/jpeg;base64,${(await readFile(join(ASSETS, "range-bg.jpg"))).toString("base64")}`;
   const gw = 250, gh = gw * (128 / 420);
   const gx = W - 70 - gw, gy = H - 38 - gh;
-  const muzzle = [gx + 6, gy + gh * 0.36];
+  // Barrel tip measured in the 420x128 icon: (5, 27).
+  const muzzle = [f(gx + 5 * (gw / 420)), f(gy + 27 * (gh / 128))];
   const recoil = hitAt.flatMap((t) => [[t - 0.005, "0 0"], [t, "7 -3"], [t + 0.12, "0 0"]]);
   const tracerX = targets.flatMap((c, i) => [[hitAt[i] - 0.005, cx(c)]]);
   const tracerY = targets.flatMap((c, i) => [[hitAt[i] - 0.005, cy(c)]]);
@@ -148,7 +149,7 @@ export async function renderRangeCard({ cells, total }) {
   segs.push([now, L, String(ammo)]);
   const byLabel = new Map();
   for (const [a, b, label] of segs) if (b > a) (byLabel.get(label) ?? byLabel.set(label, []).get(label)).push([a, b]);
-  const ammoX = gx - 26, ammoY = H - 48;
+  const ammoX = gx - 72, ammoY = H - 48;
   const ammoEls = [...byLabel]
     .map(([label, wins]) => {
       const reload = label === "RELOADING";
