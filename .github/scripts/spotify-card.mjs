@@ -81,28 +81,42 @@ const spotifyMark = (x, y, r, color) =>
 export async function renderSpotifyCard({ nowPlaying, tracks }) {
   const W = 400, H = 229;
   const head = nowPlaying ? "NOW PLAYING" : "RECENTLY PLAYED";
-  const rows = tracks.map((t) => ({ ...t, title: clip(t.title, 30), artist: clip(t.artist, 34), at: when(t.playedAt) }));
-  const h6 = await fontFace("Rajdhani", 600, uniq(["SPOTIFY", ...rows.map((r) => r.artist + r.at)]));
-  const h7 = await fontFace("Rajdhani", 700, uniq([head, "RADIO // COMMS", ...rows.map((r) => r.title)]));
+  const rows = tracks.map((t) => ({ ...t, artist: clip(t.artist, 34), at: when(t.playedAt) }));
+  const h6 = await fontFace("Rajdhani", 600, uniq(["SPOTIFY", "NOW…", ...rows.map((r) => r.artist + r.at)]));
+  const h7 = await fontFace("Rajdhani", 700, uniq([head, "NOW PLAYING", "LAST PLAYED", ...rows.map((r) => r.title)]));
 
+  // Every timestamp sits in one right-aligned column on the title line; titles are clipped to fit
+  // beside it. The top row is the featured one: NOW PLAYING (teal frame, pulsing badge, moving
+  // equaliser) while something plays, otherwise a quieter LAST PLAYED badge.
+  const timeW = (t) => t.length * 7.6;
   const rowEls = rows
     .map((r, i) => {
       const y = 50 + i * 56;
       const first = i === 0;
+      const live = first && nowPlaying;
+      const at = live ? "NOW" : r.at;
+      const titleRoom = Math.floor((W - 20 - timeW(at) - 14 - 76) / 8.6);
+      const title = clip(r.title, titleRoom);
+      const artist = first ? clip(r.artist, 24) : r.artist;
       const cover = r.art
         ? `<image href="${r.art}" x="20" y="${y}" width="44" height="44" clip-path="url(#cov)"/>`
         : `<rect x="20" y="${y}" width="44" height="44" fill="${C.panel}"/>`;
-      const eq = first
-        ? Array.from({ length: 4 }, (_, k) => `<rect x="${W - 46 + k * 6}" y="${y + 8}" width="3.5" height="16" fill="${TEAL}" style="transform-origin:0 ${y + 24}px;animation:eq ${0.7 + k * 0.17}s ${k * 0.11}s ease-in-out infinite alternate"/>`).join("")
-        : "";
+      const badgeW = live ? 106 : 86, bx = W - 20 - badgeW, by = y + 27;
+      const badge = !first ? "" : live
+        ? `<path d="${cham(bx, by, badgeW, 17, 4)}" fill="${TEAL}"/><circle class="pulse" cx="${bx + 9}" cy="${by + 8.5}" r="3" fill="${C.bg}"/><text class="h7" x="${bx + 17}" y="${by + 12.5}" font-size="10.5" letter-spacing="1.5" fill="${C.bg}">NOW PLAYING</text>`
+          + Array.from({ length: 4 }, (_, k) => `<rect x="${bx - 30 + k * 6}" y="${by + 1}" width="3.5" height="16" fill="${TEAL}" style="transform-origin:0 ${by + 17}px;animation:eq ${0.55 + k * 0.17}s ${k * 0.11}s ease-in-out infinite alternate"/>`).join("")
+        : `<path d="${cham(bx, by, badgeW, 17, 4)}" fill="none" stroke="${C.line}" stroke-width="1.2"/><text class="h7" x="${bx + badgeW / 2}" y="${by + 12.5}" text-anchor="middle" font-size="10.5" letter-spacing="1.5" fill="${C.muted}">LAST PLAYED</text>`;
+      const frame = !first ? "" : live
+        ? `<path d="${cham(12, y - 6, W - 24, 56, 8)}" fill="#13302c"/><path class="glow" d="${cham(12, y - 6, W - 24, 56, 8)}" fill="none" stroke="${TEAL}" stroke-width="1.5"/><rect x="12" y="${y + 2}" width="3" height="40" fill="${TEAL}"/>`
+        : `<path d="${cham(12, y - 6, W - 24, 56, 8)}" fill="${C.panel}"/><rect x="12" y="${y + 2}" width="3" height="40" fill="${C.red}"/>`;
       return `<g class="row" style="animation-delay:${(0.15 + i * 0.12).toFixed(2)}s">
-  ${first ? `<path d="${cham(12, y - 6, W - 24, 56, 8)}" fill="${C.panel}"/>` : ""}
+  ${frame}
   ${cover}
-  <path d="${cham(20, y, 44, 44, 7)}" fill="none" stroke="${first ? C.red : C.line}" stroke-width="1.2"/>
-  <text class="h7" x="76" y="${y + 19}" font-size="16" fill="${C.cream}">${esc(r.title)}</text>
-  <text class="h6" x="76" y="${y + 37}" font-size="13" fill="${C.muted}">${esc(r.artist)}</text>
-  ${first ? eq : `<text class="h6" x="${W - 20}" y="${y + 19}" text-anchor="end" font-size="11" letter-spacing="1.5" fill="${C.muted}">${esc(r.at)}</text>`}
-  ${first ? `<text class="h6" x="${W - 52}" y="${y + 37}" text-anchor="end" font-size="11" letter-spacing="1.5" fill="${nowPlaying ? TEAL : C.muted}">${esc(r.at)}</text>` : ""}
+  <path d="${cham(20, y, 44, 44, 7)}" fill="none" stroke="${live ? TEAL : first ? C.red : C.line}" stroke-width="${live ? 2 : 1.2}"/>
+  <text class="h7" x="76" y="${y + 19}" font-size="16" fill="${C.cream}">${esc(title)}</text>
+  <text class="h6" x="76" y="${y + 37}" font-size="13" fill="${live ? "#9fe9d6" : C.muted}">${esc(artist)}</text>
+  <text class="h6" x="${W - 20}" y="${y + 19}" text-anchor="end" font-size="11" letter-spacing="1.5" fill="${live ? TEAL : C.muted}">${esc(at)}</text>
+  ${badge}
 </g>`;
     })
     .join("");
@@ -115,6 +129,10 @@ export async function renderSpotifyCard({ nowPlaying, tracks }) {
 .row{opacity:0;animation:in .5s forwards}
 @keyframes in{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
 @keyframes eq{from{transform:scaleY(.2)}to{transform:scaleY(1)}}
+.pulse{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.glow{animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{50%{stroke-opacity:.35}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important}.row{opacity:1}}
 </style>
 <defs><clipPath id="cov" clipPathUnits="objectBoundingBox"><path d="${cham(0, 0, 1, 1, 0.16)}"/></clipPath></defs>
