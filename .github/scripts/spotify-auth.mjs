@@ -5,6 +5,8 @@
 // It opens Spotify's consent page, catches the callback, exchanges the code and stores
 // SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET and SPOTIFY_REFRESH_TOKEN as repo secrets with the
 // GitHub CLI. The token is never printed.
+// Add --vercel to also store them as Production env vars of the linked Vercel project (run
+// `npx vercel link` in the repo first) and redeploy it, for the live card in api/spotify.mjs.
 import { execFileSync, spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { createServer } from "node:http";
@@ -13,9 +15,11 @@ const REPO = process.env.PROFILE_REPO || "YongkyA23/YongkyA23";
 const REDIRECT = "http://127.0.0.1:8888/callback";
 const SCOPES = "user-read-recently-played user-read-currently-playing";
 
-const [clientId, clientSecret] = process.argv.slice(2);
+const args = process.argv.slice(2);
+const toVercel = args.includes("--vercel");
+const [clientId, clientSecret] = args.filter((a) => a !== "--vercel");
 if (!clientId || !clientSecret) {
-  console.error("Usage: node .github/scripts/spotify-auth.mjs <client_id> <client_secret>");
+  console.error("Usage: node .github/scripts/spotify-auth.mjs <client_id> <client_secret> [--vercel]");
   process.exit(1);
 }
 
@@ -55,8 +59,17 @@ if (!json.refresh_token) {
   process.exit(1);
 }
 
-for (const [name, value] of [["SPOTIFY_CLIENT_ID", clientId], ["SPOTIFY_CLIENT_SECRET", clientSecret], ["SPOTIFY_REFRESH_TOKEN", json.refresh_token]]) {
+const secrets = [["SPOTIFY_CLIENT_ID", clientId], ["SPOTIFY_CLIENT_SECRET", clientSecret], ["SPOTIFY_REFRESH_TOKEN", json.refresh_token]];
+for (const [name, value] of secrets) {
   execFileSync("gh", ["secret", "set", name, "--repo", REPO], { input: value, stdio: ["pipe", "ignore", "inherit"] });
   console.log(`Saved ${name} to ${REPO}`);
 }
-console.log("\nDone. The next workflow run will draw the Spotify card.");
+if (toVercel) {
+  const win = process.platform === "win32";
+  for (const [name, value] of secrets) {
+    execFileSync("npx", ["vercel", "env", "add", name, "--environment", "production", "--sensitive", "--force", "--yes"], { input: value, stdio: ["pipe", "ignore", "inherit"], shell: win });
+    console.log(`Saved ${name} to Vercel (production)`);
+  }
+  execFileSync("npx", ["vercel", "deploy", "--prod", "--yes"], { stdio: "inherit", shell: win });
+}
+console.log(`\nDone. ${toVercel ? "The live card is redeployed and the" : "The"} next workflow run will draw the hourly Spotify card.`);

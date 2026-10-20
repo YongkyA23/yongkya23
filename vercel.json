@@ -1,0 +1,4 @@
+{
+  "rewrites": [{ "source": "/spotify.svg", "destination": "/api/spotify" }],
+  "functions": { "api/spotify.mjs": { "includeFiles": ".github/scripts/**", "maxDuration": 10 } }
+}

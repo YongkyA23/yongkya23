@@ -2,6 +2,7 @@
 // Needs SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET and SPOTIFY_REFRESH_TOKEN (set them once with
 // `node .github/scripts/spotify-auth.mjs`). Without them it exits quietly and writes nothing.
 // Run hourly by the profile workflow: node .github/scripts/spotify-card.mjs <out.svg>
+// The same renderer also runs per request from api/spotify.mjs (Vercel) for the live card.
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -40,26 +41,28 @@ const smallest = (images = []) => [...images].sort((a, b) => a.width - b.width)[
 export async function fetchTracks(creds) {
   const token = await accessToken(creds);
   const headers = { Authorization: `Bearer ${token}` };
-  const now = await fetch("https://api.spotify.com/v1/me/player/currently-playing", { headers });
+  const [now, recentRes] = await Promise.all([
+    fetch("https://api.spotify.com/v1/me/player/currently-playing", { headers }),
+    fetch("https://api.spotify.com/v1/me/player/recently-played?limit=3", { headers }),
+  ]);
   const playing = now.status === 200 ? await now.json() : null;
-  const recent = await (await fetch("https://api.spotify.com/v1/me/player/recently-played?limit=3", { headers })).json();
+  const recent = await recentRes.json();
   const tracks = (recent.items || []).map((it) => ({ track: it.track, playedAt: it.played_at }));
-  if (playing?.is_playing && playing.item?.type === "track") {
-    tracks.unshift({ track: playing.item, playedAt: null });
+  const live = Boolean(playing?.is_playing && playing.item?.type === "track");
+  if (live) {
+    tracks.unshift({ track: playing.item, playedAt: null, progressMs: playing.progress_ms, durationMs: playing.item.duration_ms });
   }
   const seen = new Set();
-  const out = [];
-  for (const { track, playedAt } of tracks) {
-    if (seen.has(track.id) || out.length === 3) continue;
-    seen.add(track.id);
-    out.push({
-      title: track.name,
-      artist: track.artists.map((a) => a.name).join(", "),
-      art: await art(smallest(track.album?.images)),
-      playedAt,
-    });
-  }
-  return { nowPlaying: Boolean(playing?.is_playing), tracks: out };
+  const picked = tracks.filter(({ track }) => !seen.has(track.id) && seen.add(track.id)).slice(0, 3);
+  const out = await Promise.all(picked.map(async ({ track, playedAt, progressMs, durationMs }) => ({
+    title: track.name,
+    artist: track.artists.map((a) => a.name).join(", "),
+    art: await art(smallest(track.album?.images)),
+    playedAt,
+    progressMs,
+    durationMs,
+  })));
+  return { nowPlaying: live, tracks: out };
 }
 
 function when(iso) {
@@ -82,8 +85,10 @@ export async function renderSpotifyCard({ nowPlaying, tracks }) {
   const W = 400, H = 229;
   const head = nowPlaying ? "NOW PLAYING" : "RECENTLY PLAYED";
   const rows = tracks.map((t) => ({ ...t, artist: clip(t.artist, 34), at: when(t.playedAt) }));
-  const h6 = await fontFace("Rajdhani", 600, uniq(["SPOTIFY", "NOW…", ...rows.map((r) => r.artist + r.at)]));
-  const h7 = await fontFace("Rajdhani", 700, uniq([head, "NOW PLAYING", "LAST PLAYED", ...rows.map((r) => r.title)]));
+  const [h6, h7] = await Promise.all([
+    fontFace("Rajdhani", 600, uniq(["SPOTIFY", "NOW…", ...rows.map((r) => r.artist + r.at)])),
+    fontFace("Rajdhani", 700, uniq([head, "NOW PLAYING", "LAST PLAYED", ...rows.map((r) => r.title)])),
+  ]);
 
   // Every timestamp sits in one right-aligned column on the title line; titles are clipped to fit
   // beside it. The top row is the featured one: NOW PLAYING (teal frame, pulsing badge, moving
@@ -106,6 +111,11 @@ export async function renderSpotifyCard({ nowPlaying, tracks }) {
         ? `<path d="${cham(bx, by, badgeW, 17, 4)}" fill="${TEAL}"/><circle class="pulse" cx="${bx + 9}" cy="${by + 8.5}" r="3" fill="${C.bg}"/><text class="h7" x="${bx + 17}" y="${by + 12.5}" font-size="10.5" letter-spacing="1.5" fill="${C.bg}">NOW PLAYING</text>`
           + Array.from({ length: 4 }, (_, k) => `<rect x="${bx - 30 + k * 6}" y="${by + 1}" width="3.5" height="16" fill="${TEAL}" style="transform-origin:0 ${by + 17}px;animation:eq ${0.55 + k * 0.17}s ${k * 0.11}s ease-in-out infinite alternate"/>`).join("")
         : `<path d="${cham(bx, by, badgeW, 17, 4)}" fill="none" stroke="${C.line}" stroke-width="1.2"/><text class="h7" x="${bx + badgeW / 2}" y="${by + 12.5}" text-anchor="middle" font-size="10.5" letter-spacing="1.5" fill="${C.muted}">LAST PLAYED</text>`;
+      // While a track plays, a bar under the row starts where the song is right now and runs to the
+      // end over the time that is left, so the card keeps moving between requests.
+      const left = live && r.durationMs ? Math.max(0, (r.durationMs - (r.progressMs || 0)) / 1000) : 0;
+      const at0 = live && r.durationMs ? Math.min(1, (r.progressMs || 0) / r.durationMs) : 0;
+      const progress = !left ? "" : `<rect x="76" y="${y + 46}" width="${W - 96}" height="2" fill="${TEAL}" fill-opacity=".2"/><rect x="76" y="${y + 46}" width="${W - 96}" height="2" fill="${TEAL}" style="transform-origin:76px 0;transform:scaleX(${at0.toFixed(4)});animation:prog ${left.toFixed(1)}s linear forwards"/>`;
       const frame = !first ? "" : live
         ? `<path d="${cham(12, y - 6, W - 24, 56, 8)}" fill="#13302c"/><path class="glow" d="${cham(12, y - 6, W - 24, 56, 8)}" fill="none" stroke="${TEAL}" stroke-width="1.5"/><rect x="12" y="${y + 2}" width="3" height="40" fill="${TEAL}"/>`
         : `<path d="${cham(12, y - 6, W - 24, 56, 8)}" fill="${C.panel}"/><rect x="12" y="${y + 2}" width="3" height="40" fill="${C.red}"/>`;
@@ -117,6 +127,7 @@ export async function renderSpotifyCard({ nowPlaying, tracks }) {
   <text class="h6" x="76" y="${y + 37}" font-size="13" fill="${live ? "#9fe9d6" : C.muted}">${esc(artist)}</text>
   <text class="h6" x="${W - 20}" y="${y + 19}" text-anchor="end" font-size="11" letter-spacing="1.5" fill="${live ? TEAL : C.muted}">${esc(at)}</text>
   ${badge}
+  ${progress}
 </g>`;
     })
     .join("");
@@ -132,6 +143,7 @@ export async function renderSpotifyCard({ nowPlaying, tracks }) {
 .pulse{animation:pulse 1.2s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.25}}
 .glow{animation:glow 2.4s ease-in-out infinite}
+@keyframes prog{to{transform:scaleX(1)}}
 @keyframes glow{50%{stroke-opacity:.35}}
 @media (prefers-reduced-motion: reduce){*{animation:none!important}.row{opacity:1}}
 </style>
