@@ -30,7 +30,7 @@
 <table>
   <tr>
     <td valign="top" width="50%"><img src="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/rank.svg" width="100%" alt="Competitive rank from contributions in the last 365 days" /></td>
-    <td valign="top" width="50%"><img src="https://raw.githubusercontent.com/YongkyA23/YongkyA23/output/spotify.svg" width="100%" alt="Recently played on Spotify" /></td>
+    <td valign="top" width="50%"><img src="https://yongkya23.vercel.app/spotify.svg" width="100%" alt="Now playing on Spotify" /></td>
   </tr>
 </table>
 
